@@ -1,0 +1,20 @@
+tmp_data/orig_data/Experiment_Hydraulik/
+tmp_data/orig_data/Experiment_KSS/
+tmp_data/orig_data/Experiment_Messtaster/
+
+tmp_data/kmx_data/kmx_ringdrehen_dataset_*
+tmp_data/kmx_data/kmx_selected_datasets*
+
+tmp_data/graph_creation/**/*.html
+
+# python cache
+__pycache__/
+
+# excel
+*.xlsx
+
+# base dataset files
+kmx_selected_datasets
+
+# package files
+*.egg-info/
