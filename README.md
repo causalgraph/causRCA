@@ -92,19 +92,19 @@ Comprehensive dataset documentation is available in [data/README_DATASET.md](dat
 
 This section provides direct links between the evaluation scripts and the results tables / diagrams presented in our paper.
 
-###  (Table 2) - Causal Discovery Results
+###  (Table 3) - Causal Discovery Results
 ```bash
 # Generate Causal Discovery Performance Table for majority approach (dataset ensemble learning)
 python eval/cd/cd_eval.py
 ```
 
-###  (Table 3 & Table 4) - Supervised RCA Results and Unsupervised RCA Results
+###  (Table 4 & Table 5) - Supervised RCA Results and Unsupervised RCA Results
 ```bash
 # Generate Supervised and Unsupervised RCA Performance Tables
 python eval/rca/rca_eval.py
 ```
 
-### (Table 5) - Causal RCA Performance using causal graphs obtained from different CD algorithms
+### (Table 6) - Causal RCA Performance using causal graphs obtained from different CD algorithms
 ```bash
 # Generate Causal RCA Performance Table using causal graphs for unsupervised root cause analysis
 # Evaluates AVG@3 performance scores across three datasets (Coolant, Hydraulic, Probe) 
