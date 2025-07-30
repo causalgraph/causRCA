@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: "MARCA: Modular Automated Root Cause Analysis"
+authors:
+  - family-names: "Mehling"
+    given-names: "Carl Willy"
+    orcid: "https://orcid.org/0000-0002-0515-6800"
+    affiliation: "Fraunhofer IWU"
+    email: "carl.willy.mehling@iwu.fraunhofer.de"
+  - family-names: "Pieper"
+    given-names: "Sven"
+    orcid: "https://orcid.org/0000-0001-7436-8762"
+    affiliation: "Fraunhofer IWU"
+  - family-names: "Lüke"
+    given-names: "Tobias"
+    orcid: "https://orcid.org/0000-0002-5563-8779"
+    affiliation: "Fraunhofer IWU"
+abstract: "MARCA is a framework for automated root cause analysis in industrial datasets. It supports various algorithms, data sources, and evaluation methods."
+repository-code: "https://github.com/causalgraph/causRCA"
+license: "Apache-2.0"
+keywords:
+  - root cause analysis
+  - causal inference
+  - industrial data
+  - python
+  - automation
+date-released: "2025-07-31"
