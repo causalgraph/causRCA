@@ -4,9 +4,9 @@
 [![License][apache2.0-licence]](https://opensource.org/license/apache-2-0)
 [![GitHub][github-shield]](https://github.com/causalgraph/causRCA)
 
-# causRCA - Real-World Dataset for Causal Discovery and Root Cause Analysis in Machinery
+# Benchmarking of Automated Root Cause Analysis and Causal Discovery in Manufacturing Using the causRCA Dataset (CIRPe 2025)
 
-A comprehensive repository for the causRCA dataset and benchmarking framework for causal discovery and automated root cause analysis (RCA) methods in industrial machinery.
+A comprehensive repository for the causRCA dataset and benchmarking framework for causal discovery and automated root cause analysis (RCA) methods in manufacturing systems.
 
 ## Overview
 
@@ -23,33 +23,27 @@ This repository contains the implementation, evaluation scripts, and benchmarkin
 ## Repository Structure
 
 ```
-├── data/                     # causRCA dataset (see data/README_DATA_DESCRIPTION.md)
-│   ├── real_op/             # Normal operation time series
-│   ├── dig_twin/            # Fault simulation data
-│   │   ├── exp_coolant/     # Coolant system faults
-│   │   ├── exp_hydraulics/  # Hydraulic system faults
-│   │   └── exp_probe/       # Probe system faults
-│   ├── expert_graph/        # Expert-derived causal graph
-│   └── categorical_encoding.json
-├── src/                      # Source code for analysis and benchmarking
-├── eval/                     # Evaluation scripts
-│   ├── cd/                  # Causal discovery evaluation
-│   └── rca/                 # Root cause analysis evaluation
+├── data/                         # causRCA dataset (see data/README_DATA_DESCRIPTION.md)
+│   ├── real_op/                  # Normal operation time series
+│   ├── dig_twin/                 # Fault simulation data
+│   │   ├── exp_coolant/          # Coolant system faults
+│   │   ├── exp_hydraulics/       # Hydraulic system faults
+│   │   └── exp_probe/            # Probe system faults
+│   ├── expert_graph/             # Expert-derived causal graph
+│   └── categorical_encoding.json # Categorical variable encoding
+├── src/                          # Source code for analysis and benchmarking
+├── eval/                         # Evaluation scripts
+│   ├── cd/                       # Causal discovery evaluation
+│   └── rca/                      # Root cause analysis evaluation
 ```
 
 ## Dataset Access
 
 The causRCA dataset is published on Zenodo:
 
+**Dataset: Link:** [https://doi.org/10.5281/zenodo.15876410](https://doi.org/10.5281/zenodo.15876410)
+
 **Dataset DOI:** [10.5281/zenodo.15876410](https://doi.org/10.5281/zenodo.15876410)
-
-**Dataset Citation:**
-
-```
-Mehling, C. W., Pieper, S. and Lüke, T. (2025). causRCA: Real-World Dataset for 
-Causal Discovery and Root Cause Analysis in Machinery (Version 1.0.0) [Data set]. 
-Zenodo. https://doi.org/10.5281/zenodo.15876410
-```
 
 ## Installation
 
@@ -98,13 +92,13 @@ This section provides direct links between the evaluation scripts and the result
 python eval/cd/cd_eval.py
 ```
 
-###  (Table 4 & Table 5) - Supervised RCA Results and Unsupervised RCA Results
+###  (Table 5 & Table 6) - Supervised RCA Results and Unsupervised RCA Results
 ```bash
 # Generate Supervised and Unsupervised RCA Performance Tables
 python eval/rca/rca_eval.py
 ```
 
-### (Table 6) - Causal RCA Performance using causal graphs obtained from different CD algorithms
+### (Table 7) - Causal RCA Performance using causal graphs obtained from different CD algorithms
 ```bash
 # Generate Causal RCA Performance Table using causal graphs for unsupervised root cause analysis
 # Evaluates AVG@3 performance scores across three datasets (Coolant, Hydraulic, Probe) 
@@ -112,7 +106,7 @@ python eval/rca/rca_eval.py
 python eval/rca/causal_rca_unsupervised_eval.py
 ```
 
-### (Figure 2) - Boxplot for RCA performance with different F1 variants of expert graphs
+### (Figure 3) - Boxplot for RCA performance with different F1 variants of expert graphs
 ```bash
 # Generate Boxplot for RCA performance using different F1 variants of expert graphs
 python eval/rca/causal_rca_f1_vars_eval.py
@@ -121,6 +115,45 @@ python eval/rca/causal_rca_f1_vars_eval.py
 ## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE.md) file for details.
+
+## Citation
+
+**CIRPe Paper:**
+```bibtex
+tba. (after review and publication)
+```
+
+**GitHub Repository:**
+```bibtex
+@software{mehling_Benchmarking_of_Automated_2025,
+    author  = {Mehling, Carl Willy and Pieper, Sven and Lüke, Tobias},
+    license = {Apache-2.0},
+    month   = jul,
+    title   = {{Benchmarking of Automated Root Cause Analysis and Causal Discovery
+                in Manufacturing Using the causRCA Dataset (CIRPe 2025)
+                }},
+    url     = {https://github.com/causalgraph/causRCA},
+    year    = {2025}
+}
+```
+
+**Dataset:**
+```bibtex
+@dataset{mehling_2025_15876410,
+    author    = {Mehling, Carl Willy and
+                 Pieper, Sven and
+                 Lüke, Tobias},
+    title     = {causRCA: Real-World Dataset for Causal Discovery
+                 and Root Cause Analysis in Machinery
+                 },
+    month     = jul,
+    year      = 2025,
+    publisher = {Zenodo},
+    version   = {1.0.0},
+    doi       = {10.5281/zenodo.15876410},
+    url       = {https://doi.org/10.5281/zenodo.15876410},
+}
+```
 
 ## Authors & Acknowledgments
 

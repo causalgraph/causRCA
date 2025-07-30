@@ -8,6 +8,7 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import Patch
 import matplotlib.font_manager as fm
 import networkx as nx
+import numpy as np
 
 from causrca.rca_models.unsupervised_rca_models import CausalPrioTimeRecencyRCA
 from rca_eval import evaluate_unsupervised_rca_model
@@ -61,7 +62,7 @@ def create_f1_variants_grouped_boxplot(f1_results_dict1, f1_results_dict2, f1_re
         dataset_names = ['Dataset 1', 'Dataset 2', 'Dataset 3']
     
     # Define colors for the three datasets
-    colors = ['#2E8B57', '#4169E1', '#DC143C']  # Sea Green, Royal Blue, Crimson
+    colors = ['#2E8B57', '#4169E1', '#DC143C']  # Green, Blue, Red
     dark_colors = ['#1F5F3F', '#2F4F8F', '#8B0000']  # Darker versions for medians
     
     # Calculate positions for grouped box plots
@@ -137,12 +138,14 @@ def create_f1_variants_grouped_boxplot(f1_results_dict1, f1_results_dict2, f1_re
     plt.show()
 
 
-def create_f1_variants_boxplot(f1_var_results, save_path=None, width_cm=6.5, height_cm=4.50):
+def create_f1_variants_boxplot(f1_var_results, base_results=None, save_path=None, width_cm=6.5, height_cm=4.50):
     """
     Creates a compact box plot for F1 variant evaluation results.
     
     :param f1_var_results: Dictionary with F1 variants as keys and lists of MAP@3 values.
     :type f1_var_results: dict
+    :param base_results: List of MAP@3 values from base unsupervised algorithm (TimeRank) for comparison. If None, no comparison lines are shown.
+    :type base_results: list, optional
     :param save_path: Path to save the plot. If None, the plot is only displayed.
     :type save_path: str, optional
     :param width_cm: Width of the plot in centimeters.
@@ -192,6 +195,28 @@ def create_f1_variants_boxplot(f1_var_results, save_path=None, width_cm=6.5, hei
     for median in box_plot['medians']:
         median.set_color(dark_green)
         median.set_linewidth(2)
+    
+    # Add base results comparison lines if provided
+    if base_results is not None:
+        base_mean = np.mean(base_results)
+        base_min = np.min(base_results)
+        base_max = np.max(base_results)
+        base_std_dev = np.std(base_results)
+        
+        # Get x-axis limits for positioning
+        x_min, x_max = plt.xlim()
+        text_x = x_max - 0.1  # Position text slightly left of right edge
+        
+        # Fill areas between mean and min/max
+        plt.axhspan(base_mean, base_max, color='#FFB6C1', alpha=0.3, zorder=1)
+        plt.axhspan(base_min, base_mean, color='#FFB6C1', alpha=0.3, zorder=1)
+        
+        # Draw horizontal line for mean
+        plt.axhline(y=base_mean, color='#DC143C', linestyle='-', linewidth=2, alpha=0.8, 
+                   label=f'TimeRank (µ={base_mean:.2f}±{base_std_dev:.2f})', zorder=2)
+                
+        # Add legend for TimeRank baseline
+        plt.legend(loc='lower right', fontsize=6, framealpha=0.8, handlelength=1.0)
     
     # Set Y-axis range from 0.0 to 1.0 with 0.2 steps
     plt.ylim(0.0, 1.0)
@@ -337,7 +362,7 @@ for f1_variant, paths in F1_VARIANT_GRAPH_DIRS.items():
             result = evaluate_unsupervised_rca_model(
                 model=unsupervised_model,
                 path=base_dataset,
-                use_relevant_nodes_info=False
+                mode='full'
             )
             # Print results
             print(f"\n### Evaluation Results for CausalPrioTimeRecencyRCA on {base_dataset.name} with F1 variant {f1_variant} ###\n")
@@ -354,13 +379,13 @@ for f1_variant, paths in F1_VARIANT_GRAPH_DIRS.items():
                 
 
 create_f1_variants_boxplot(f1_var_results=f1_var_results,
+                           base_results=[0.35, 0.18, 0.19],
                            save_path=Path(project_path, "eval", "rca", "results", "f1_variants_boxplot_map.svg"),)
 
-create_f1_variants_grouped_boxplot(f1_results_dict1=f1_var_results_probe,
-                                   f1_results_dict2=f1_var_results_coolant,
-                                   f1_results_dict3=f1_var_results_hydraulics,
-                                   dataset_names=["Probe", "Coolant", "Hydraulics"],
-                                   save_path=Path(project_path, "eval", "rca", "results", "f1_variants_grouped_boxplot.svg"),
-                                   width_cm=7.5, height_cm=4.50)
+#create_f1_variants_grouped_boxplot(f1_results_dict1=f1_var_results_probe,
+#                                   f1_results_dict2=f1_var_results_coolant,
+#                                   f1_results_dict3=f1_var_results_hydraulics,
+#                                   dataset_names=["Probe", "Coolant", "Hydraulics"],
+#                                   save_path=Path(project_path, "eval", "rca", "results", "f1_variants_grouped_boxplot.svg"),
+#                                   width_cm=7.5, height_cm=4.50)
 
-    

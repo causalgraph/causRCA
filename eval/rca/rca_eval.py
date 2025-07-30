@@ -28,7 +28,7 @@ HYDRAULICS_DS_PATH = Path(DIG_TWIN_DS_PATH, "exp_hydraulics")
 # Load Categorical Encoding Dictionary ones at startup
 CATEGORICAL_ENCODING_DICT = get_encoding_dict()
 
-def evaluate_supervised_rca_model_with_k_folds(model: SupervisedRCAModel, path: str, k_folds: int = 5, use_relevant_nodes_info: bool = True):
+def evaluate_supervised_rca_model_with_k_folds(model: SupervisedRCAModel, path: str, k_folds: int = 5, mode: str = 'full'):
     """
     Evaluate a supervised RCA model using stratified k-fold cross-validation.
 
@@ -38,16 +38,15 @@ def evaluate_supervised_rca_model_with_k_folds(model: SupervisedRCAModel, path: 
     :type path: str
     :param k_folds: Number of folds for cross-validation.
     :type k_folds: int
-    :param use_relevant_nodes_info: Whether to use relevant nodes information.
-    :type use_relevant_nodes_info: bool
+    :param mode: Evaluation mode - 'full' uses all nodes, 'sub' uses only relevant nodes.
+    :type mode: str
     :return: Dictionary containing evaluation metrics.
     :rtype: dict
     """
     # Get dataset information
     csv_path_to_truth_data, rel_nodes = helpers.load_datasets_truth_data_and_relevant_nodes(path)
-    
-    # Overwrite relevant nodes if specified
-    if use_relevant_nodes_info is False:
+    # Use relevant nodes only in 'sub' mode
+    if mode != 'sub':
         rel_nodes = None
     
     # Initialize stratified k-fold
@@ -165,7 +164,7 @@ def evaluate_supervised_rca_model_with_k_folds(model: SupervisedRCAModel, path: 
         "all_predictions": all_predictions
     }
 
-def evaluate_unsupervised_rca_model(model, path: str, use_relevant_nodes_info: bool = True):
+def evaluate_unsupervised_rca_model(model, path: str, mode: str = 'full'):
     """
     Evaluate an unsupervised RCA model.
 
@@ -173,16 +172,15 @@ def evaluate_unsupervised_rca_model(model, path: str, use_relevant_nodes_info: b
     :type model: object
     :param path: Path to the dataset directory.
     :type path: str
-    :param use_relevant_nodes_info: Whether to use relevant nodes information.
-    :type use_relevant_nodes_info: bool
+    :param mode: Evaluation mode - 'full' uses all nodes, 'sub' uses only relevant nodes.
+    :type mode: str
     :return: Dictionary containing evaluation metrics.
     :rtype: dict
     """
     # Get dataset information
     csv_path_to_truth_data, rel_nodes = helpers.load_datasets_truth_data_and_relevant_nodes(path)
-    
-    # Overwrite relevant nodes if specified
-    if use_relevant_nodes_info is False:
+    # Use relevant nodes only in 'sub' mode
+    if mode != 'sub':
         rel_nodes = None
     
     # Metrics
@@ -378,18 +376,17 @@ if __name__ == "__main__":
             BaselineSupervisedRCA(),
             LogisticRegressionRCA(),
             CausalPrioLogisticRegressionRCA(causal_graph=graph_in_path)]
-        for use_relevant_nodes_info in [True, False]:
-            suffix = "-only_rel" if use_relevant_nodes_info else ""
+        for mode in ['sub', 'full']:
+            suffix = "-sub" if mode == 'sub' else ""
             for supervised_model in supervised_models:
                 model_name = supervised_model.__class__.__name__
-                print(f"\nEvaluating RCA model '{model_name}' on {dataset_name} with use_relevant_nodes_info={use_relevant_nodes_info}:\n")
+                print(f"\nEvaluating RCA model '{model_name}' on {dataset_name} with mode={mode}:\n")
                 current_result = evaluate_supervised_rca_model_with_k_folds(
                     model=supervised_model,
                     path=path,
                     k_folds=3,
-                    use_relevant_nodes_info=use_relevant_nodes_info
+                    mode=mode
                 )
-                
                 # Update results dataframe
                 supervised_results = update_results_dataframe(
                     results_df=supervised_results,
@@ -401,8 +398,7 @@ if __name__ == "__main__":
                     in_k_to_track=[1, 2],    # Track Prec@1 and Prec@2
                     include_map=True         # Include MAP@K metrics
                 )
-                
-                print(f"\n### Evaluation Results for '{model_name}' on {dataset_name} with use_relevant_nodes_info={use_relevant_nodes_info} ###")
+                print(f"\n### Evaluation Results for '{model_name}' on {dataset_name} with mode={mode} ###")
                 print(current_result["results_table"])
 
     # Save supervised results
@@ -430,19 +426,17 @@ if __name__ == "__main__":
         unsupervised_models = [
             TimeRecency_BaselineUnsupervisedRCA(),
             CausalPrioTimeRecencyRCA(causal_graph=graph_in_path)]
-        for use_relevant_nodes_info in [True, False]:
-            suffix = "-only_rel" if use_relevant_nodes_info else ""
+        for mode in ['sub', 'full']:
+            suffix = "-sub" if mode == 'sub' else ""
             for unsupervised_model in unsupervised_models:
                 model_name = unsupervised_model.__class__.__name__
                 print(f"\nEvaluating RCA model '{model_name}' on "
-                      f"{dataset_name} with use_relevant_nodes_info="
-                      f"{use_relevant_nodes_info}:\n")
+                      f"{dataset_name} with mode={mode}:\n")
                 result = evaluate_unsupervised_rca_model(
                     model=unsupervised_model,
                     path=path,
-                    use_relevant_nodes_info=use_relevant_nodes_info
+                    mode=mode
                 )
-                
                 # Update results dataframe
                 unsupervised_results = update_results_dataframe(
                     results_df=unsupervised_results,
@@ -454,10 +448,8 @@ if __name__ == "__main__":
                     in_k_to_track=[1, 3, 5],   # Track Prec@1, Prec@3, Prec@5
                     include_map=True          # Include MAP@K metrics
                 )
-                
                 msg = (f"\n### Evaluation Results for '{model_name}' on "
-                       f"{dataset_name} with use_relevant_nodes_info="
-                       f"{use_relevant_nodes_info} ###")
+                       f"{dataset_name} with mode={mode} ###")
                 print(msg)
                 print(f"Prec@1: {result['prec_at_1']:.4f}, "
                       f"Prec@3: {result['prec_at_3']:.4f}, "

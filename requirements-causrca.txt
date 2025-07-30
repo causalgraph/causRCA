@@ -7,4 +7,3 @@ pgmpy==1.0.0
 feature_engine==1.6.2
 tigramite==5.2.8.1
 sortedcontainers==2.4.0
-# TODO pandas -> for this pandas needs to be updated in causal-graph-dev to 2.X (or not necessary anymore after tmp_data was generated)
