@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: "MARCA: Modular Automated Root Cause Analysis"
+title: "causRCA - Real-World Dataset for Causal Discovery and Root Cause Analysis in Machinery"
 authors:
   - family-names: "Mehling"
     given-names: "Carl Willy"
@@ -14,13 +14,15 @@ authors:
     given-names: "Tobias"
     orcid: "https://orcid.org/0000-0002-5563-8779"
     affiliation: "Fraunhofer IWU"
-abstract: "MARCA is a framework for automated root cause analysis in industrial datasets. It supports various algorithms, data sources, and evaluation methods."
+abstract: "causRCA is a real-world dataset for causal discovery and root cause analysis in industrial machinery. The dataset provides diverse industrial scenarios with ground truth causal graphs, enabling the benchmarking and evaluation of causal inference and root cause analysis algorithms. The repository also includes source code for simplified causal discovery and RCA benchmarking."
 repository-code: "https://github.com/causalgraph/causRCA"
 license: "Apache-2.0"
 keywords:
+  - dataset
   - root cause analysis
+  - causal discovery
   - causal inference
-  - industrial data
+  - industrial machinery
+  - benchmark
   - python
-  - automation
 date-released: "2025-07-31"
