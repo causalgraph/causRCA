@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+title: "Benchmarking of Automated Root Cause Analysis and Causal Discovery in Manufacturing Using the causRCA Dataset (CIRPe 2025)"
+authors:
+  - family-names: "Mehling"
+    given-names: "Carl Willy"
+    orcid: "https://orcid.org/0000-0002-0515-6800"
+    affiliation: "Fraunhofer IWU"
+    email: "carl.willy.mehling@iwu.fraunhofer.de"
+  - family-names: "Pieper"
+    given-names: "Sven"
+    orcid: "https://orcid.org/0000-0001-7436-8762"
+    affiliation: "Fraunhofer IWU"
+  - family-names: "Lüke"
+    given-names: "Tobias"
+    orcid: "https://orcid.org/0000-0002-5563-8779"
+    affiliation: "Fraunhofer IWU"
+abstract: "This repository contains the causRCA dataset and benchmark framework for automated root cause analysis and causal discovery in manufacturing. The dataset provides real-world industrial scenarios with ground truth causal graphs, enabling comprehensive evaluation of causal inference and RCA algorithms. The accompanying code facilitates benchmarking studies and comparative analysis of different approaches."
+repository-code: "https://github.com/causalgraph/causRCA"
+license: "Apache-2.0"
+keywords:
+  - dataset
+  - benchmark
+  - root cause analysis
+  - causal discovery
+  - causal inference
+  - manufacturing
+  - industrial machinery
+  - cirpe
+  - python
+date-released: "2025-07-31"

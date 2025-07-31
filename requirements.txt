@@ -1,0 +1,5 @@
+pydot==4.0.1
+matplotlib>=3.5.1
+pandas>=2.3.1
+gcastle==1.0.4
+torch>=2.7.1
