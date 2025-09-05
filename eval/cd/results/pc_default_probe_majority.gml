@@ -64,6 +64,12 @@ graph [
     weight 1
   ]
   edge [
+    source 2
+    target 8
+    key 0
+    weight 1
+  ]
+  edge [
     source 3
     target 1
     key 0
@@ -90,6 +96,12 @@ graph [
   edge [
     source 7
     target 9
+    key 0
+    weight 1
+  ]
+  edge [
+    source 8
+    target 2
     key 0
     weight 1
   ]

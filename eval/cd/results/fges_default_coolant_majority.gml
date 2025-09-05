@@ -83,12 +83,6 @@ graph [
   ]
   edge [
     source 1
-    target 5
-    key 0
-    weight 1
-  ]
-  edge [
-    source 1
     target 7
     key 0
     weight 1

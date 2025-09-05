@@ -221,6 +221,12 @@ graph [
   ]
   edge [
     source 6
+    target 8
+    key 0
+    weight 1
+  ]
+  edge [
+    source 6
     target 9
     key 0
     weight 1

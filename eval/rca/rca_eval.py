@@ -12,7 +12,7 @@ import networkx as nx
 import eval.rca.helpers_rca_eval as helpers
 
 from causrca.rca_models.supervised_rca_models import BaselineSupervisedRCA, SupervisedRCAModel, LogisticRegressionRCA, CausalPrioLogisticRegressionRCA
-from causrca.rca_models.unsupervised_rca_models import  CausalPrioTimeRecencyRCA, TimeRecency_BaselineUnsupervisedRCA
+from causrca.rca_models.unsupervised_rca_models import  CausalPrioTimeRecencyRCA, TimeRecency_BaselineUnsupervisedRCA, PageRankRCA, RandomWalkRCA, Baro
 from causrca.utils.utils import seed_everything, get_encoding_dict
 
 # Set random seed for reproducibility
@@ -425,7 +425,11 @@ if __name__ == "__main__":
         graph_in_path = find_and_load_gml_file(path)
         unsupervised_models = [
             TimeRecency_BaselineUnsupervisedRCA(),
-            CausalPrioTimeRecencyRCA(causal_graph=graph_in_path)]
+            Baro(),
+            CausalPrioTimeRecencyRCA(causal_graph=graph_in_path),
+            RandomWalkRCA(causal_graph=graph_in_path),
+            PageRankRCA(causal_graph=graph_in_path)
+        ]
         for mode in ['sub', 'full']:
             suffix = "-sub" if mode == 'sub' else ""
             for unsupervised_model in unsupervised_models:
