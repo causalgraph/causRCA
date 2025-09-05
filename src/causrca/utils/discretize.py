@@ -100,42 +100,40 @@ def __discretize_dataset_helper(
     # Create time steps
     time_points = np.arange(0, max_time_s + time_step_s, time_step_s)
     
-    # Get all unique nodes
-    nodes = df['node'].unique()
-    
-    # Initialize discretized matrix
-    discretized_data = pd.DataFrame(index=time_points, columns=nodes)
+    # Create an empty DataFrame for results
+    discretized_data = pd.DataFrame(index=time_points)
     discretized_data.index.name = 'time_s'
     
-    # Propagate values over time for each node
-    for node in nodes:
+    # Process each node using pandas reindex and forward-fill to avoid loops
+    for node in df['node'].unique():
         node_data = df[df['node'] == node].sort_values('time_s')
         
         if len(node_data) == 0:
             continue
             
-        # Set first value for all time points before the first change
-        first_value = node_data.iloc[0]['value']
-        current_value = first_value
+        # Create a Series indexed by time_s
+        node_series = pd.Series(
+            data=node_data['value'].values,
+            index=node_data['time_s']
+        )
         
-        # Go through all time points
-        for i, time_point in enumerate(time_points):
-            # Check if there is a change at or before this time point
-            changes_up_to_now = node_data[node_data['time_s'] <= time_point]
+        # Reindex to all time points and forward fill / pad (propagate last value)
+        resampled = node_series.reindex(
+            time_points,
+            method='pad'
+        )
+        
+        # Handle values before first observation (back-fill from first value)
+        if pd.isna(resampled.iloc[0]):
+            resampled.fillna(node_data['value'].iloc[0], inplace=True)
             
-            if len(changes_up_to_now) > 0:
-                # Take the last value before or at this time point
-                current_value = changes_up_to_now.iloc[-1]['value']
-            
-            discretized_data.loc[time_point, node] = current_value
+        # Add to result DataFrame
+        discretized_data[node] = resampled
     
-    # Remove constant columns if requested
+    # Remove constant columns if requested - using vectorized operations
     if remove_constant_columns:
-        # Identify columns that are constant
-        constant_columns = []
-        for col in discretized_data.columns:
-            if discretized_data[col].nunique() <= 1:
-                constant_columns.append(col)
+        nunique = discretized_data.nunique()
+        constant_columns = nunique[nunique <= 1].index.tolist()
         
         if constant_columns:
             print(f"Number of removed constant nodes: {len(constant_columns)}")
@@ -159,54 +157,77 @@ def transform_non_continuous_values_in_df(df: pd.DataFrame, categorical_encoding
     # Create a copy to avoid modifying the original
     result_df = df.copy()
     
-    # Get the type mapping for each node
-    type_mapping = df.groupby('node')['type'].first().to_dict()
+    # Get unique combinations of node and type - more efficient than groupby
+    node_types = df[['node', 'type']].drop_duplicates().set_index('node')['type'].to_dict()
     
-    # Process each unique node
-    for node in type_mapping.keys():
-        node_mask = result_df['node'] == node
-        node_type = type_mapping.get(node, 'Continuous')
+    # Group nodes by their types for vectorized operations
+    binary_nodes = [node for node, type_ in node_types.items() if type_ == 'Binary']
+    alarm_nodes = [node for node, type_ in node_types.items() if type_ == 'Alarm']
+    counter_continuous_nodes = [node for node, type_ in node_types.items() if type_ in ['Counter', 'Continuous']]
+    categorical_nodes = [node for node, type_ in node_types.items() if type_ == 'Categorical']
+    
+    if convert_to_float:
+        # Create mapping dictionary for True/False values (used by both Binary and Alarm)
+        bool_map = {True: 1.0, False: 0.0, 'True': 1.0, 'False': 0.0}
         
-        if convert_to_float:
-            if node_type == 'Binary':
-                # Convert Binary True/False to 1.0/0.0
-                result_df.loc[node_mask, 'value'] = result_df.loc[node_mask, 'value'].map(
-                    {True: 1.0, False: 0.0, 'True': 1.0, 'False': 0.0})
-            elif node_type == 'Alarm':
-                # Convert Alarm True/False to 1.0/0.0
-                result_df.loc[node_mask, 'value'] = result_df.loc[node_mask, 'value'].map(
-                    {True: 1.0, False: 0.0, 'True': 1.0, 'False': 0.0})
-            elif node_type == 'Categorical':
-                # Convert Categorical using encoding JSON
-                if node in categorical_encoding_dict:
-                    # Convert values to string first, then map to float
-                    result_df.loc[node_mask, 'value'] = result_df.loc[node_mask, 'value'].astype(str)
-                    result_df.loc[node_mask, 'value'] = result_df.loc[node_mask, 'value'].map(
-                        categorical_encoding_dict[node])
-                    # Fill NaN values with 0.0 for unmapped categories
-                    result_df.loc[node_mask, 'value'] = result_df.loc[node_mask, 'value'].fillna(0.0)
-                else:
-                    print(f"Warning: No encoding found for categorical variable '{node}'")
-                    result_df.loc[node_mask, 'value'] = result_df.loc[node_mask, 'value'].astype(str)
-            elif node_type in ['Counter', 'Continuous']:
-                # Convert to numeric
-                result_df.loc[node_mask, 'value'] = pd.to_numeric(result_df.loc[node_mask, 'value'], errors='coerce')
+        # Process binary nodes all at once
+        if binary_nodes:
+            binary_mask = result_df['node'].isin(binary_nodes)
+            result_df.loc[binary_mask, 'value'] = result_df.loc[binary_mask, 'value'].map(bool_map)
+        
+        # Process alarm nodes all at once (same mapping as binary)
+        if alarm_nodes:
+            alarm_mask = result_df['node'].isin(alarm_nodes)
+            result_df.loc[alarm_mask, 'value'] = result_df.loc[alarm_mask, 'value'].map(bool_map)
+        
+        # Process continuous/counter nodes all at once
+        if counter_continuous_nodes:
+            cc_mask = result_df['node'].isin(counter_continuous_nodes)
+            result_df.loc[cc_mask, 'value'] = pd.to_numeric(result_df.loc[cc_mask, 'value'], errors='coerce')
+        
+        # Process categorical nodes (these need individual treatment due to different mappings)
+        for node in categorical_nodes:
+            node_mask = result_df['node'] == node
+            if node in categorical_encoding_dict:
+                # Apply encoding in one step
+                result_df.loc[node_mask, 'value'] = (
+                    result_df.loc[node_mask, 'value'].astype(str)
+                    .map(categorical_encoding_dict[node])
+                    .fillna(0.0)
+                )
             else:
-                raise ValueError(f"Unknown node type '{node_type}' for node '{node}'")
-        else:
-            # Original behavior - keep values as they are in CSV
-            if node_type == 'Binary':
-                # Keep binary values as they are
-                pass
-            elif node_type in ['Counter', 'Continuous']:
-                # Try to convert to numeric, but keep as string if conversion fails
-                result_df.loc[node_mask, 'value'] = pd.to_numeric(
-                    result_df.loc[node_mask, 'value'], errors='ignore')
-            elif node_type in ['Categorical', 'Alarm']:
-                # Keep categorical values as strings
+                print(f"Warning: No encoding found for categorical variable '{node}'")
                 result_df.loc[node_mask, 'value'] = result_df.loc[node_mask, 'value'].astype(str)
-            else:
-                raise ValueError(f"Unknown node type '{node_type}' for node '{node}'")
+        
+        # Check for unknown node types
+        known_types = {'Binary', 'Alarm', 'Counter', 'Continuous', 'Categorical'}
+        unknown_types = set(node_types.values()) - known_types
+        if unknown_types:
+            unknown_nodes = [node for node, type_ in node_types.items() if type_ in unknown_types]
+            raise ValueError(f"Unknown node types '{unknown_types}' for nodes {unknown_nodes}")
+            
+    else:
+        # Original behavior - keep values as they are in CSV
+        # Binary nodes - keep values as they are (no processing needed)
+        
+        # Process continuous/counter nodes - try to convert to numeric
+        if counter_continuous_nodes:
+            cc_mask = result_df['node'].isin(counter_continuous_nodes)
+            result_df.loc[cc_mask, 'value'] = pd.to_numeric(
+                result_df.loc[cc_mask, 'value'], errors='ignore')
+        
+        # Process categorical and alarm nodes - convert to strings
+        categorical_alarm_nodes = categorical_nodes + alarm_nodes
+        if categorical_alarm_nodes:
+            ca_mask = result_df['node'].isin(categorical_alarm_nodes)
+            result_df.loc[ca_mask, 'value'] = result_df.loc[ca_mask, 'value'].astype(str)
+        
+        # Check for unknown node types
+        known_types = {'Binary', 'Alarm', 'Counter', 'Continuous', 'Categorical'}
+        unknown_types = set(node_types.values()) - known_types
+        if unknown_types:
+            unknown_nodes = [node for node, type_ in node_types.items() if type_ in unknown_types]
+            raise ValueError(f"Unknown node types '{unknown_types}' for nodes {unknown_nodes}")
     
     return result_df
 

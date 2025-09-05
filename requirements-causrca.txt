@@ -7,3 +7,4 @@ pgmpy==1.0.0
 feature_engine==1.6.2
 tigramite==5.2.8.1
 sortedcontainers==2.4.0
+scikit-network==0.33.3
