@@ -1,0 +1,24 @@
+source_id,target_id,source_label,target_label,edge_name,comment
+40,38,MPA_InitPos,MPA_A_701124,MPA_InitPos_Monitoring,"When axis is not reaching initial pos in time (MPA_InitPos=False), besides being commanded to (MPA_toInitPos=True),
+                        end position not reached alarm 701124 is triggered."
+40,39,MPA_InitPos,MPA_A_701125,MPA_InitPos_BothEndPosSensors,"When both end position sensors are triggered (MPA_WorkPos=True AND MPA_InitPos=True),
+                        alarm 701125 is triggered."
+40,44,MPA_InitPos,MPC_close,MPA_InitPos_MPC_close,"When axis is in initial position (MPA_InitPos=True), cover can be commanded to close (MPC_close=True)"
+41,38,MPA_toInitPos,MPA_A_701124,MPA_toInitPos_Monitoring,"When axis is commanded to initial position (MPA_toInitPos=True) but does not reach it in time (MPA_InitPos=False),
+                        end position not reached alarm 701124 is triggered."
+41,40,MPA_toInitPos,MPA_InitPos,MPA_toInitPos_MPA_InitPos,"When axis is commanded to initial position (MPA_toInitPos=True), it moves to initial position (MPA_InitPos=True)"
+41,42,MPA_toInitPos,MPA_toWorkPos,MPA_toInitPos_MPA_toWorkPos,"When axis is not commanded to initial position (MPA_toInitPos=False),
+                                it can be commanded to working position (MPA_toWorkPos=True)"
+42,38,MPA_toWorkPos,MPA_A_701124,MPA_toWorkPos_Monitoring,"When axis is commanded to working position (MPA_toWorkPos=True) but does not reach it in time (MPA_WorkPos=False),
+                        end position not reached alarm 701124 is triggered."
+42,43,MPA_toWorkPos,MPA_WorkPos,MPA_toWorkPos_MPA_WorkPos,"When axis is commanded to working position (MPA_toWorkPos=True), it moves to working position (MPA_WorkPos=True)"
+43,37,MPA_WorkPos,MP_Inactive,MPA_WorkPos_MP_Inactive,"When axis is in working position (MPA_WorkPos=True), measuring probe can be activated (MP_Inactive=False)"
+43,38,MPA_WorkPos,MPA_A_701124,MPA_WorkPos_Monitoring,"When axis is not reaching work pos in time (MPA_WorkPos=False), besides being commanded to (MPA_toWorkPos=True),
+                        end position not reached alarm 701124 is triggered."
+43,39,MPA_WorkPos,MPA_A_701125,MPA_WorkPos_BothEndPosSensors,"When both end position sensors are triggered (MPA_WorkPos=True AND MPA_InitPos=True),
+                        alarm 701125 is triggered."
+44,45,MPC_close,MPC_Closed,MPC_close_MPC_Closed,"When cover is commanded to close (MPC_close=True), cover closes (MPC_Closed=True)"
+44,47,MPC_close,MPC_open,MPC_close_MPC_open,"When cover is not commanded to close (MPC_close=False),
+                                it can be commanded to open (MPC_open=True)"
+46,42,MPC_isOpen,MPA_toWorkPos,MPC_isOpen_MPA_toWorkPos,"When cover is open (MPC_isOpen=True), axis can be commanded to working position (MPA_toWorkPos=True)"
+47,46,MPC_open,MPC_isOpen,MPC_open_MPC_isOpen,"When cover is commanded to open (MPC_open=True), cover opens (MPC_isOpen=True)"

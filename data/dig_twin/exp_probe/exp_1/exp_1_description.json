@@ -1,0 +1,29 @@
+{
+  "exp_id": "exp_1",
+  "group": "probe",
+  "scenario": {
+    "init": "Measuring probe axis (MPA) is in one of the following states: A) Already at working position (WP = true, m2WP = true, IP = false, m2IP = false) B) Moving toward working position (WP = false, m2WP = true, IP = false, m2IP = false)",
+    "action": null,
+    "expected_result": "A) WP remains true (MPA continues to be recognized at working position) B) WP switches to true within a few seconds (MPA reaches and is recognized at working position)",
+    "instead_failure": "A) WP suddenly switches to false (spontaneous sensor failure - MPA is no longer detected despite not moving) B) WP never becomes true (MPA is not recognized at working position after movement)"
+  },
+  "manipulatedVars": [
+    "MPA_WorkPos"
+  ],
+  "alarms": [
+    "MPA_A_701124"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_1",
+      "name": "MPA_WorkPos Sensor is defective",
+      "comment": "Sensor value spontaneously flicks to false / is always false.",
+      "variablesStates": {
+        "MPA_InitPos": false,
+        "MPA_toInitPos": false,
+        "MPA_toWorkPos": true,
+        "MPA_WorkPos": false
+      }
+    }
+  ]
+}

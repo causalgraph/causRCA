@@ -1,0 +1,24 @@
+{
+  "exp_id": "exp_13",
+  "group": "hydraulics",
+  "scenario": {
+    "init": "Machine is in normal operation; hydraulic pump motor is available.",
+    "instead_failure": "The hydraulic pump motor fails spontaneously during operation, causing condition monitoring to trigger."
+  },
+  "manipulatedVars": [
+    "Hyd_Pump_Ok"
+  ],
+  "alarms": [
+    "Hyd_A_700208"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_7",
+      "name": "Hydraulic pump motor fails",
+      "comment": "Condition monitoring of hydraulic pump motor indicates motor failure",
+      "variablesStates": {
+        "Hyd_Pump_Ok": false
+      }
+    }
+  ]
+}

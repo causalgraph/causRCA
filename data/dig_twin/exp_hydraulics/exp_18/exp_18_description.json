@@ -1,0 +1,36 @@
+{
+  "exp_id": "exp_18",
+  "group": "hydraulics",
+  "scenario": {
+    "init": "Machine is in normal operation; hydraulic oil level is stable and the hydraulic pump motor is running normally.",
+    "expected_result": "Hydraulic oil level remains within acceptable limits, and the pump motor operates continuously without interruption.",
+    "instead_failure": "Due to Leakage the oil level begins to fall continuously, eventually leading to motor failure."
+  },
+  "manipulatedVars": [
+    "Hyd_Level_Ok",
+    "Hyd_Pump_Ok"
+  ],
+  "alarms": [
+    "Hyd_A_700205",
+    "Hyd_A_700206",
+    "Hyd_A_700208"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_4",
+      "name": "Leakage in hydraulics system",
+      "comment": "Leakage causes oil levels to drop, resulting in a pump failure.",
+      "variablesStates": {
+        "Hyd_Level_Ok": false
+      }
+    },
+    {
+      "id": "diag_7",
+      "name": "Hydraulic pump motor fails",
+      "comment": "Leakage causes oil levels to drop, resulting in a pump failure.",
+      "variablesStates": {
+        "Hyd_Pump_Ok": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,2769 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>KausalApp</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+        <script type="text/javascript" src="https://unpkg.com/vis-network@9.1.12/standalone/umd/vis-network.min.js"></script>
+
+    </head>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: "Roboto Medium", "Roboto", sans-serif;
+            color: white;
+            background-color: #33333D;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+        }
+
+        .header {
+            height: 1cm;
+            background-color: #373741;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            color: white;
+        }
+
+        .logo {
+            margin-left: auto;
+            width: auto;
+            height: 80%;
+        }
+
+        .sidebar {
+            font-family: "Roboto Medium", "Roboto", sans-serif;
+            width: 25%;
+            background-color: #373741;
+            margin: 6px;
+            padding: 16px;
+            overflow-y: auto;
+            word-wrap: break-word;
+            resize: both;
+            height: calc(100vh - 2.5cm);
+            line-height: 1.2;
+        }
+
+        .main {
+            position: relative;
+            background-color: #33333D;
+            width: 100%;
+            margin: 6px;
+        }
+
+        .main-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            margin: 6px;
+            padding: 6px;
+        }
+
+        .main-header-title {
+            color: white;
+            font-size: 24px;
+        }
+
+        .main-header-buttons {
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+
+        .main-buttons {
+            background-color: #0194C2;
+            border-radius: 4px;
+            margin: 0;
+            padding: 8px 15px;
+            color: white;
+            border: 1px solid grey;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .main-buttons:focus{
+            outline: none;
+        }
+        .main-buttons:hover {
+            background-color: #6ec6e1;
+            outline: none;
+        }
+        
+        .disabled-main-buttons {
+            background-color: #999999;
+            border-radius: 4px;
+            margin: 0;
+            padding: 8px 15px;
+            color: white;
+            border: 1px solid white;
+            font-size: 16px;
+            cursor: not-allowed;
+        }
+
+        .active-main-buttons {
+            background-color: #0194C2;
+            border-radius: 4px;
+            margin: 0;
+            padding: 8px 15px;
+            color: white;
+            border: 1px solid white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .active-main-buttons:focus {
+            outline: none;
+        }
+        
+        .active-main-buttons:hover {
+            background-color: #6ec6e1;
+            outline: none;
+        }
+
+        
+        h4 {
+            margin-bottom: 3px;
+        }
+        
+        .cluster {
+            background-color: white;
+            color: black;
+            border: 2px solid #4CAF50;
+            color: #37465e;
+        }
+        
+        #sidebar-header {
+            font-size: 24px;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        
+        #sidebar-content {
+            line-height: 1.2;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        #networkContainer {
+            width: 100%;
+            height: calc(100vh - 3.3cm);
+        }
+        
+        /* LOADER as example from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader5 */
+        /* Center the loader */
+        #loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 1000;
+            width: 120px;
+            height: 120px;
+            margin: -76px 0 0 -76px;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Dropdown, adapted from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown_right */
+        .dropdown {
+            float: right;
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-main-buttons {
+            background-color: #0194C2;
+            border-radius: 4px;
+            margin: 0;
+            padding: 8px 15px;
+            color: white;
+            border: 1px solid grey;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .dropdown-main-buttons:hover {
+            background-color: #6ec6e1;
+            outline: none;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            right: 0;
+            width: auto;
+            height: auto;
+        }
+
+        .dropdown-content button {
+            display: block;
+            width: 100%;
+            padding: 8px 15px;
+            text-decoration: none;
+            color: white;
+            background-color: #399ab7;
+            border: none;
+            font-size: 14px;
+            text-align: left;
+            transition: background-color 0.3s ease; /* add a transition for a smooth hover effect */
+        }
+        
+        .dropdown-content button:hover {
+            background-color:  #89c6d8;
+            cursor: pointer;
+        }
+
+        .show {display: block;}
+            
+
+    </style>
+    <body>
+        <header class="header">
+            <div class="header-title">causalgraph visualizer</div>
+                <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288.84 38.01">
+    <defs>
+        <style>.cls-1{fill:#ffffff;}.cls-2{fill:#016482;}</style>
+    </defs>
+    <g id="Ebene_2" data-name="Ebene 2">
+        <g id="Ebene_1-2" data-name="Ebene 1">
+            <path class="cls-1" d="M50.15,22.58l8.16-8.35a.65.65,0,0,1,.47-.2H61.2a.66.66,0,0,1,.47,1.11L53.2,23.73l11.29,11.5a.65.65,0,0,1-.46,1.1H61.69a.66.66,0,0,1-.46-.19L50.15,24.87"/>
+            <path class="cls-1" d="M50.15,24.8V35.45a.84.84,0,0,1-.83.84H47.93a.85.85,0,0,1-.84-.84V2.63a.84.84,0,0,1,.84-.84h1.39a.83.83,0,0,1,.83.84V22.51"/>
+            <path class="cls-1" d="M87.81,13.94h1.28a.89.89,0,0,1,.89.9V35.4a.89.89,0,0,1-.89.89H87.81a.89.89,0,0,1-.89-.89V31.65a10.21,10.21,0,0,1-9,5.21,11.47,11.47,0,0,1-11.2-11.77A11.41,11.41,0,0,1,78,13.37a10,10,0,0,1,9,4.93V14.84A.89.89,0,0,1,87.81,13.94Zm-.89,11.25a8.62,8.62,0,1,0-8.66,8.75A8.68,8.68,0,0,0,86.92,25.19Z"/>
+            <path class="cls-1" d="M114.15,13.94h1.28a.89.89,0,0,1,.89.9V35.4a.89.89,0,0,1-.89.89h-1.28a.89.89,0,0,1-.89-.89v-3c-1.34,3.16-5,4.5-7.75,4.5-5.41,0-9.09-3.73-9.05-9.9V14.84a.9.9,0,0,1,.9-.9h1.27a.9.9,0,0,1,.9.9V26.91c0,4.31,2.68,7,6.31,7s7.37-2.1,7.42-7.51V14.84A.89.89,0,0,1,114.15,13.94Z"/>
+            <path class="cls-1" d="M122.55,30.36h1.08a.86.86,0,0,1,.83.58c.56,1.66,2.25,3.2,5.16,3.2,3.21,0,5.17-1.68,5.17-3.93,0-1.82-1.25-3-3.54-3.59L128,25.86c-3.16-.77-5.69-2.4-5.69-6.13s3.11-6.36,7.37-6.36c3.39,0,6.54,1.7,7.2,5a.9.9,0,0,1-.89,1.06h-1.22a.91.91,0,0,1-.86-.66,4.19,4.19,0,0,0-4.19-2.69c-2.58,0-4.35,1.58-4.35,3.68s1.82,3,3.44,3.4l3.31.81c4.35,1.05,5.69,3.69,5.69,6.27,0,4-3.59,6.6-8.23,6.6-3.53,0-7.05-1.86-8-5.4A.9.9,0,0,1,122.55,30.36Z"/>
+            <path class="cls-1" d="M162.61,13.94h1.28a.89.89,0,0,1,.89.9V35.4a.89.89,0,0,1-.89.89h-1.28a.89.89,0,0,1-.89-.89V31.65a10.21,10.21,0,0,1-9,5.21,11.47,11.47,0,0,1-11.2-11.77,11.41,11.41,0,0,1,11.29-11.72,10,10,0,0,1,8.95,4.93V14.84A.89.89,0,0,1,162.61,13.94Zm-.89,11.25a8.62,8.62,0,1,0-8.66,8.75A8.68,8.68,0,0,0,161.72,25.19Z"/>
+            <path class="cls-1" d="M171.52,35.4V2.68a.89.89,0,0,1,.89-.89h1.28a.89.89,0,0,1,.89.89V35.4a.89.89,0,0,1-.89.89h-1.28A.89.89,0,0,1,171.52,35.4Z"/>
+            <path class="cls-2" d="M201.2,13.94h1.28a.89.89,0,0,1,.89.9V35.4a.89.89,0,0,1-.89.89H201.2a.89.89,0,0,1-.89-.89V31.65a10.19,10.19,0,0,1-9,5.21,11.47,11.47,0,0,1-11.2-11.77,11.41,11.41,0,0,1,11.29-11.72,10,10,0,0,1,8.95,4.93V14.84A.89.89,0,0,1,201.2,13.94Zm-.89,11.25a8.81,8.81,0,0,0-8.71-8.9,8.83,8.83,0,0,0,.05,17.65A8.68,8.68,0,0,0,200.31,25.19Z"/>
+            <path class="cls-2" d="M208.83,30.36h1.08a.86.86,0,0,1,.83.58c.56,1.66,2.25,3.2,5.16,3.2,3.21,0,5.17-1.68,5.17-3.93,0-1.82-1.24-3-3.54-3.59l-3.21-.76c-3.15-.77-5.69-2.4-5.69-6.13s3.11-6.36,7.37-6.36c3.39,0,6.54,1.7,7.2,5a.9.9,0,0,1-.89,1.06h-1.22a.9.9,0,0,1-.85-.66,4.2,4.2,0,0,0-4.19-2.69c-2.59,0-4.36,1.58-4.36,3.68s1.82,3,3.45,3.4l3.3.81c4.35,1.05,5.69,3.69,5.69,6.27,0,4-3.59,6.6-8.23,6.6-3.52,0-7.05-1.86-8-5.4A.9.9,0,0,1,208.83,30.36Z"/>
+            <path class="cls-2" d="M228.43,30.36h1.08a.86.86,0,0,1,.83.58c.56,1.66,2.25,3.2,5.16,3.2,3.21,0,5.17-1.68,5.17-3.93,0-1.82-1.25-3-3.54-3.59l-3.21-.76c-3.16-.77-5.69-2.4-5.69-6.13s3.11-6.36,7.37-6.36c3.39,0,6.54,1.7,7.2,5a.9.9,0,0,1-.89,1.06h-1.22a.92.92,0,0,1-.86-.66,4.18,4.18,0,0,0-4.19-2.69c-2.58,0-4.35,1.58-4.35,3.68s1.82,3,3.45,3.4L238,24c4.35,1.05,5.69,3.69,5.69,6.27,0,4-3.59,6.6-8.23,6.6-3.52,0-7.05-1.86-7.95-5.4A.9.9,0,0,1,228.43,30.36Z"/>
+            <path class="cls-2" d="M249.38,35.48V14.84a.89.89,0,0,1,.89-.9h1.28a.89.89,0,0,1,.89.9V35.48a.8.8,0,0,1-.8.81h-1.46A.8.8,0,0,1,249.38,35.48Z"/>
+            <path class="cls-2" d="M258.58,30.36h1.08a.84.84,0,0,1,.83.58c.57,1.66,2.25,3.2,5.17,3.2,3.2,0,5.16-1.68,5.16-3.93,0-1.82-1.24-3-3.54-3.59l-3.2-.76c-3.16-.77-5.7-2.4-5.7-6.13s3.11-6.36,7.37-6.36c3.39,0,6.54,1.7,7.2,5a.9.9,0,0,1-.88,1.06h-1.23a.9.9,0,0,1-.85-.66,4.2,4.2,0,0,0-4.19-2.69c-2.58,0-4.35,1.58-4.35,3.68s1.81,3,3.44,3.4l3.3.81c4.36,1.05,5.7,3.69,5.7,6.27,0,4-3.59,6.6-8.23,6.6-3.53,0-7.06-1.86-8-5.4A.89.89,0,0,1,258.58,30.36Z"/>
+            <path class="cls-2" d="M288.84,14.84v.84a.89.89,0,0,1-.9.89h-4.22V35.4a.89.89,0,0,1-.9.89h-1.23a.89.89,0,0,1-.89-.89V16.57h-3.17a.88.88,0,0,1-.89-.89v-.84a.89.89,0,0,1,.89-.9h3.17V6.46a.89.89,0,0,1,.89-.89h1.23a.89.89,0,0,1,.9.89v7.48h4.22A.9.9,0,0,1,288.84,14.84Z"/>
+            <circle class="cls-2" cx="250.91" cy="7.37" r="1.81"/>
+            <rect class="cls-2" x="23.65" y="25.65" width="2.62" height="5.19" rx="1.13"/>
+            <rect class="cls-2" x="23.65" y="6.3" width="2.62" height="5.19" rx="1.13"/>
+            <rect class="cls-2" x="29.5" y="15.97" width="2.62" height="5.19" rx="1.13"/>
+            <path class="cls-2" d="M37.53,16.53v5.06a.41.41,0,0,1-.81,0V16.34h0L35.62,17a.46.46,0,0,1-.22.06.4.4,0,0,1-.22-.74l.45-.3a1.63,1.63,0,0,1-.78-1A15.44,15.44,0,0,0,33.66,12a1.53,1.53,0,0,1,.14-1.62l.84-1.12a1.55,1.55,0,0,0-.13-2L32.23,4.91a1.61,1.61,0,0,0-2-.26L29,5.4a1.58,1.58,0,0,1-1.65,0,16.2,16.2,0,0,0-3-1.36,1.59,1.59,0,0,1-1.08-1.25L23,1.44A1.6,1.6,0,0,0,21.51.11L19.13,0a3.17,3.17,0,0,0,.12.46c.17.52.33,1,.5,1.54.51,1.56,1,3.18,1.47,4.81a7.83,7.83,0,0,1-.55,5.91,1.87,1.87,0,0,0,0,1.22,25.89,25.89,0,0,0,1.17,2.76c.18.4.37.79.54,1.19s.24.52.37.78c.29.64.6,1.29.84,2a2.83,2.83,0,0,1-1.86,3.64l-.31.13a4.24,4.24,0,0,1-1.09.34c.06.33.1.52.2.89a2.54,2.54,0,0,1-.43,2.85,2.23,2.23,0,0,1,.19,1,2.5,2.5,0,0,1-.95,1.92.53.53,0,0,0,0,.43,9.55,9.55,0,0,1,.38,2.8,3.18,3.18,0,0,1-2.85,3.17,2.14,2.14,0,0,0,.35.06l3.3.12a1.57,1.57,0,0,0,1.6-1.22l.29-1.36a1.54,1.54,0,0,1,1.15-1.17,16.41,16.41,0,0,0,3.1-1.14,1.59,1.59,0,0,1,1.64.15l1.15.83a1.61,1.61,0,0,0,2-.1l2.4-2.21a1.54,1.54,0,0,0,.23-2l-.77-1.18A1.49,1.49,0,0,1,33.26,27a15.3,15.3,0,0,0,1.35-3A1.57,1.57,0,0,1,35.87,23l1.41-.2a1.54,1.54,0,0,0,1.34-1.48l.09-3.24A1.57,1.57,0,0,0,37.53,16.53Zm-13.83.55a.4.4,0,0,1-.22-.74l1.73-1.13,0,0,.07,0h.24l.07,0,.06.05.06,0,0,0a.06.06,0,0,0,0,0l0,.07s0,.05,0,.08v6.08a.41.41,0,0,1-.81,0v-5.3l-1.1.73A.46.46,0,0,1,23.7,17.08Zm3.39,12.63a1.93,1.93,0,0,1-1.94,1.93h-.37a1.92,1.92,0,0,1-1.93-1.93V26.78a1.93,1.93,0,0,1,1.93-1.94h.37a1.94,1.94,0,0,1,1.94,1.94Zm0-19.35a1.94,1.94,0,0,1-1.94,1.93h-.37a1.93,1.93,0,0,1-1.93-1.93V7.42a1.93,1.93,0,0,1,1.93-1.93h.37a1.94,1.94,0,0,1,1.94,1.93Zm2.24-3.7,1.73-1.13h0a.11.11,0,0,1,.07,0l.08,0h.08l.08,0,.07,0,.06,0,.06.06,0,0a0,0,0,0,0,0,0l0,.07s0,.06,0,.08v6.08a.41.41,0,1,1-.81,0V6.62l-1.1.72a.47.47,0,0,1-.22.07.42.42,0,0,1-.34-.19A.41.41,0,0,1,29.33,6.66Zm2.35,24.6a.41.41,0,1,1-.81,0V26l-1.1.72a.38.38,0,0,1-.22.07.42.42,0,0,1-.34-.19.41.41,0,0,1,.12-.56l1.73-1.13h0l.07,0,.08,0h.08l.08,0,.07,0,.06,0,.06.06,0,0a0,0,0,0,0,0,0l0,.08s0,.05,0,.08v6.07ZM32.94,20A1.94,1.94,0,0,1,31,22h-.37A1.93,1.93,0,0,1,28.7,20V17.1a1.93,1.93,0,0,1,1.93-1.94H31a1.94,1.94,0,0,1,1.94,1.94Z"/>
+            <path class="cls-1" d="M18.59,34.6a8.8,8.8,0,0,0-.36-2.48,1.5,1.5,0,0,1,.45-1.57A1.29,1.29,0,0,0,19,28.79a5.13,5.13,0,0,0-1.12-.49A9.68,9.68,0,0,0,18.89,28c1-.47.87-1,.58-2a12,12,0,0,1-.26-1.19c-.14-.72.11-1.05.88-1.08a4.73,4.73,0,0,0,1.27-.42A1.74,1.74,0,0,0,22.55,21c-.31-.91-.77-1.78-1.17-2.67-.6-1.34-1.28-2.66-1.75-4a2.91,2.91,0,0,1,.07-2.1,6.81,6.81,0,0,0,.45-5.11C19.59,5,18.87,2.91,18.2.82A3.7,3.7,0,0,1,18,0a1.55,1.55,0,0,0-1.38,1.21l-.29,1.36a1.57,1.57,0,0,1-1.15,1.17,15.74,15.74,0,0,0-3.1,1.14,1.59,1.59,0,0,1-1.64-.15L9.28,3.89a1.6,1.6,0,0,0-2,.11L4.86,6.21a1.54,1.54,0,0,0-.24,2L5.4,9.36a1.51,1.51,0,0,1,0,1.62A15,15,0,0,0,4.1,14a1.57,1.57,0,0,1-1.27,1l-1.4.2A1.55,1.55,0,0,0,.09,16.68L0,19.92A1.59,1.59,0,0,0,1.26,21.5l1.39.3a1.57,1.57,0,0,1,1.2,1.13A16.21,16.21,0,0,0,5.05,26a1.51,1.51,0,0,1-.14,1.61l-.84,1.13a1.55,1.55,0,0,0,.13,2l2.28,2.37a1.59,1.59,0,0,0,2,.25l1.2-.75a1.61,1.61,0,0,1,1.64,0,17,17,0,0,0,3,1.37,1.56,1.56,0,0,1,1.08,1.24l.22,1.39a1,1,0,0,0,.06.23l.77,0A2.12,2.12,0,0,0,18.59,34.6Z"/>
+        </g>
+    </g>
+</svg>
+        </header>
+        <div class="container">
+            <div class="sidebar">
+                <div id="sidebar-header">
+                    Graph Information
+                </div>
+                <div id="sidebar-content">
+                </div>
+            </div>
+            <div class="main">
+                <div id="loader"></div>
+                <div class="main-header">
+                    <div class="main-header-title">
+                    </div>
+                    <div class="main-header-buttons">
+                        <button id="fit-screen-button" class="main-buttons">Fit to Screen</button>
+                        <button id="open-all-button" class="main-buttons">Open All</button>
+                        <button id="reset-button" class="main-buttons">Reset</button>
+                        <!-- Physics button commented out - uncomment to restore functionality
+                        <button id="physics-on-off-button" class="main-buttons">
+                            Physics Disabled
+                        </button>
+                        -->
+                        <!-- Layout dropdown commented out - uncomment to restore functionality
+                        <div class="dropdown" id="dropdown">
+                            <button id="layout-dropdown-button" class="dropdown-main-buttons">Set Layout</button>
+                            <div id="layout-dropdown-content" class="dropdown-content">
+                                <button id="set-dynamic-layout-button">dynamic</button>
+                                <button id="set-hierarchical-wide-layout-button">hierarchical-wide</button>
+                                <button id="set-hierarchical-tight-layout-button">hierarchical-tight</button>
+                            </div>
+                        </div>
+                        -->
+                    </div>
+                </div>
+                <div id="networkContainer"></div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            // Variables passed from drawing function
+            var Groups = ['Hydraulics', 'Hyd_Filter', 'Hyd_Temp', 'Hyd_Pump', 'Hyd_Level'];
+            var GroupHierarchy = {"Hydraulics": {"parent": null, "children": ["Hyd_Filter", "Hyd_Level", "Hyd_Pump", "Hyd_Temp"]}, "Hyd_Filter": {"parent": "Hydraulics", "children": []}, "Hyd_Level": {"parent": "Hydraulics", "children": []}, "Hyd_Pump": {"parent": "Hydraulics", "children": []}, "Hyd_Temp": {"parent": "Hydraulics", "children": []}};
+            var DOTstring = `digraph {
+Hyd_IsEnabled [type="['Variable']", iri="cg_store#Hyd_IsEnabled", isAffectedBy="['Hyd_A_700204_Disables_Hyd_IsEnabled', 'Hyd_A_700207_Disables_Hyd_IsEnabled']", io=output, comment="True = indicates that hydraulics is enabled", datatype=bool, groupedBy=Hydraulics, variabletype=binary, examples="True, False", error_id=19];
+Hyd_Pressure [type="['Variable']", iri="cg_store#Hyd_Pressure", isCausing="['Hyd_Pressure_Monitoring', 'Hyd_Pressure_Control']", io=input, comment="hydraulic pressure analog ACTUAL value", datatype=int, groupedBy=Hydraulics, variabletype=continuous, examples="10274, 7381", error_id=20];
+Hyd_Valve_P_Up [type="['Variable']", iri="cg_store#Hyd_Valve_P_Up", isAffectedBy="['Hyd_Pressure_Control', 'Hyd_A_700202_Disables_Hyd_Valve_P_Up']", io=output, comment="True = accumulator charge valve commanded to open (until target pressure is reached again)", datatype=bool, groupedBy=Hydraulics, variabletype=binary, examples="True, False", error_id=21];
+Hyd_Filter_Ok [type="['Variable']", iri="cg_store#Hyd_Filter_Ok", isCausing="['Hyd_Filter_Monitoring', 'Hyd_Filter_Clogged_Pump_Failure']", io=input, comment="True = hydraulic filter is Ok", datatype=bool, groupedBy="Hyd_Filter", variabletype=binary, examples="True, False", error_id=23];
+Hyd_Level_Ok [type="['Variable']", iri="cg_store#Hyd_Level_Ok", isCausing="['Hyd_Level_Warning_Monitoring', 'Hyd_Level_Alarm_Monitoring', 'Hyd_Level_Low_Pump_Failure']", io=input, comment="True = hydraulic level is Ok", datatype=bool, groupedBy="Hyd_Level", variabletype=binary, examples="True, False", error_id=26];
+Hyd_Pump_isOff [type="['Variable']", iri="cg_store#Hyd_Pump_isOff", isAffectedBy="['Hyd_Pump_On_Status']", io=input, comment="True = hydraulic pump is off", datatype=bool, groupedBy="Hyd_Pump", variabletype=binary, examples="True, False", error_id=28];
+Hyd_Pump_Ok [type="['Variable']", iri="cg_store#Hyd_Pump_Ok", isCausing="['Hyd_Pump_Monitoring', 'Hyd_Pump_Ok_Condition']", isAffectedBy="['Hyd_Filter_Clogged_Pump_Failure', 'Hyd_Level_Low_Pump_Failure']", io=input, comment="True = motor of hydraulic pump is Ok", datatype=bool, groupedBy="Hyd_Pump", variabletype=binary, examples="True, False", error_id=29];
+Hyd_Pump_On [type="['Variable']", iri="cg_store#Hyd_Pump_On", isCausing="['Hyd_Pump_On_Status']", isAffectedBy="['Hyd_Pump_Ok_Condition', 'Hyd_A_700202_Disables_Hyd_Pump_On', 'Hyd_A_700206_Disables_Hyd_Pump_On']", io=output, comment="True = hydraulic pump is commanded to be on", datatype=bool, groupedBy="Hyd_Pump", variabletype=binary, examples="True, False", error_id=30];
+Hyd_Temp_lt_70 [type="['Variable']", iri="cg_store#Hyd_Temp_lt_70", isCausing="['Hyd_Temp_Warning_Monitoring', 'Hyd_Temp_70_to_80']", io=input, comment="True = temperature of hydraulic oil below 70 degree C, False = warning for temperature", datatype=bool, groupedBy="Hyd_Temp", variabletype=binary, examples="True, False", error_id=33];
+Hyd_Temp_lt_80 [type="['Variable']", iri="cg_store#Hyd_Temp_lt_80", isCausing="['Hyd_Temp_Alarm_Monitoring']", isAffectedBy="['Hyd_Temp_70_to_80']", io=input, comment="True = temperature of hydraulic oil below 80 degree C, False = system stop", datatype=bool, groupedBy="Hyd_Temp", variabletype=binary, examples="True, False", error_id=34];
+Hyd_A_700202 [type="['Alarm']", iri="cg_store#Hyd_A_700202", isCausing="['Hyd_A_700202_Disables_Hyd_Valve_P_Up', 'Hyd_A_700202_Disables_Hyd_Pump_On']", isAffectedBy="['Hyd_Pressure_Monitoring']", comment="alarm that pressure monitoring of hydraulics registered hydraulic pressure out of norm", datatype=bool, groupedBy=Hydraulics, variabletype=alarm, examples="True (=alarm active), False(=alarm inactive)", error_id=18];
+Hyd_A_700207 [type="['Alarm']", iri="cg_store#Hyd_A_700207", isCausing="['Hyd_A_700207_Disables_Hyd_IsEnabled']", isAffectedBy="['Hyd_Filter_Monitoring']", comment="alarm that hydraulic filter for returning oil is clogged", datatype=bool, groupedBy="Hyd_Filter", variabletype=alarm, examples="True (=alarm active), False(=alarm inactive)", error_id=22];
+Hyd_A_700205 [type="['Alarm']", iri="cg_store#Hyd_A_700205", isAffectedBy="['Hyd_Level_Warning_Monitoring']", comment="warning that hydraulic oil level is close to minimum", datatype=bool, groupedBy="Hyd_Level", variabletype=alarm, examples="True (=alarm active), False(=alarm inactive)", error_id=24];
+Hyd_A_700206 [type="['Alarm']", iri="cg_store#Hyd_A_700206", isCausing="['Hyd_A_700206_Disables_Hyd_Pump_On']", isAffectedBy="['Hyd_Level_Alarm_Monitoring']", comment="alarm that hydraulic oil level is below minimum", datatype=bool, groupedBy="Hyd_Level", variabletype=alarm, examples="True (=alarm active), False(=alarm inactive)", error_id=25];
+Hyd_A_700208 [type="['Alarm']", iri="cg_store#Hyd_A_700208", isAffectedBy="['Hyd_Pump_Monitoring']", comment="alarm that hydraulic pump motor protection switch triggered", datatype=bool, groupedBy="Hyd_Pump", variabletype=alarm, examples="True (=alarm active), False(=alarm inactive)", error_id=27];
+Hyd_A_700203 [type="['Alarm']", iri="cg_store#Hyd_A_700203", isAffectedBy="['Hyd_Temp_Warning_Monitoring']", comment="warning that temperature monitoring of hydraulics registers more than 70 degree C", datatype=bool, groupedBy="Hyd_Temp", variabletype=alarm, examples="True (=alarm active), False(=alarm inactive)", error_id=31];
+Hyd_A_700204 [type="['Alarm']", iri="cg_store#Hyd_A_700204", isCausing="['Hyd_A_700204_Disables_Hyd_IsEnabled']", isAffectedBy="['Hyd_Temp_Alarm_Monitoring']", comment="alarm that temperature monitoring of hydraulics registers more than 80 degree C", datatype=bool, groupedBy="Hyd_Temp", variabletype=alarm, examples="True (=alarm active), False(=alarm inactive)", error_id=32];
+Hyd_Pressure -> Hyd_A_700202 [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Pressure_Monitoring", comment="When hydraulic pressure is out of normal range for at least 5 seconds -> Alarm 700202 is triggered", hasCause="Hyd_Pressure", hasEffect="Hyd_A_700202"];
+Hyd_Pressure -> Hyd_Valve_P_Up [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Pressure_Control", comment="When hydraulic pressure falls below threshold, valve is commanded to open (Hyd_Valve_P_Up=True)", hasCause="Hyd_Pressure", hasEffect="Hyd_Valve_P_Up"];
+Hyd_Filter_Ok -> Hyd_A_700207 [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Filter_Monitoring", comment="When Hyd_Filter_Ok=False for at least 5 seconds -> Alarm 700207 is triggered", hasCause="Hyd_Filter_Ok", hasEffect="Hyd_A_700207"];
+Hyd_Filter_Ok -> Hyd_Pump_Ok [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Filter_Clogged_Pump_Failure", comment="When Hyd_Filter_Ok=False for some time, the probability of Hyd_Pump_OK=False rises (pump might fail)", hasCause="Hyd_Filter_Ok", hasEffect="Hyd_Pump_Ok"];
+Hyd_Level_Ok -> Hyd_A_700205 [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Level_Warning_Monitoring", comment="When Hyd_Level_Ok=False -> Warning 700205 is immediately triggered", hasCause="Hyd_Level_Ok", hasEffect="Hyd_A_700205"];
+Hyd_Level_Ok -> Hyd_A_700206 [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Level_Alarm_Monitoring", comment="When Hyd_Level_Ok=False for at least 800ms  -> Alarm 700206 is triggered", hasCause="Hyd_Level_Ok", hasEffect="Hyd_A_700206"];
+Hyd_Level_Ok -> Hyd_Pump_Ok [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Level_Low_Pump_Failure", comment="When Hyd_Level_Ok=False for some time, the probability of Hyd_Pump_OK=False rises (pump might fail)", hasCause="Hyd_Level_Ok", hasEffect="Hyd_Pump_Ok"];
+Hyd_Pump_Ok -> Hyd_A_700208 [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Pump_Monitoring", comment="When Hyd_Pump_Ok=False -> Motor protection switch is triggered indicated by alarm 700208=True", hasCause="Hyd_Pump_Ok", hasEffect="Hyd_A_700208"];
+Hyd_Pump_Ok -> Hyd_Pump_On [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Pump_Ok_Condition", comment="If Hyd_Pump_Ok=False, then Hyd_Pump_On is turned off (Hyd_Pump_On=False) to prevent damage.", hasCause="Hyd_Pump_Ok", hasEffect="Hyd_Pump_On"];
+Hyd_Pump_On -> Hyd_Pump_isOff [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Pump_On_Status", comment="When hydraulic pump is commanded to be on (Hyd_Pump_On=True), it results in the pump being on (Hyd_Pump_isOff=False)", hasCause="Hyd_Pump_On", hasEffect="Hyd_Pump_isOff"];
+Hyd_Temp_lt_70 -> Hyd_A_700203 [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Temp_Warning_Monitoring", comment="When Hyd_Temp_lt_70=False (temp >= 70°C) -> Warning 700203 is triggered", hasCause="Hyd_Temp_lt_70", hasEffect="Hyd_A_700203"];
+Hyd_Temp_lt_70 -> Hyd_Temp_lt_80 [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Temp_70_to_80", comment="Temperature above 70 degree is reached before 80 degree (common unobserved confounder)", hasCause="Hyd_Temp_lt_70", hasEffect="Hyd_Temp_lt_80"];
+Hyd_Temp_lt_80 -> Hyd_A_700204 [key=0, type="['CausalEdge']", iri="cg_store#Hyd_Temp_Alarm_Monitoring", comment="When Hyd_Temp_lt_80=False (temp >= 80°C) -> Alarm 700204 is triggered", hasCause="Hyd_Temp_lt_80", hasEffect="Hyd_A_700204"];
+Hyd_A_700202 -> Hyd_Valve_P_Up [key=0, type="['CausalEdge']", iri="cg_store#Hyd_A_700202_Disables_Hyd_Valve_P_Up", comment="When hydraulic pressure out of norm alarm 700202 is triggered (Hyd_A_700202=True), the pressure accumulation valve is closed in fear of leakage (Hyd_Valve_P_Up=False).", hasCause="Hyd_A_700202", hasEffect="Hyd_Valve_P_Up"];
+Hyd_A_700202 -> Hyd_Pump_On [key=0, type="['CausalEdge']", iri="cg_store#Hyd_A_700202_Disables_Hyd_Pump_On", comment="When pressure out of norm alarm 700202 is triggered (Hyd_A_700202=True), the hydraulic pump is turned off (Hyd_Pump_On=False).", hasCause="Hyd_A_700202", hasEffect="Hyd_Pump_On"];
+Hyd_A_700207 -> Hyd_IsEnabled [key=0, type="['CausalEdge']", iri="cg_store#Hyd_A_700207_Disables_Hyd_IsEnabled", comment="When hydraulic filter is clogged alarm 700207 is triggered (Hyd_A_700207=True), hydraulics is disabled (Hyd_IsEnabled=False).", hasCause="Hyd_A_700207", hasEffect="Hyd_IsEnabled"];
+Hyd_A_700206 -> Hyd_Pump_On [key=0, type="['CausalEdge']", iri="cg_store#Hyd_A_700206_Disables_Hyd_Pump_On", comment="When hydraulic level is below minimum alarm 700206 is triggered (Hyd_A_700206=True), the hydraulic pump is turned off (Hyd_Pump_On=False).", hasCause="Hyd_A_700206", hasEffect="Hyd_Pump_On"];
+Hyd_A_700204 -> Hyd_IsEnabled [key=0, type="['CausalEdge']", iri="cg_store#Hyd_A_700204_Disables_Hyd_IsEnabled", comment="When hydraulic temperature is above 80 degree C alarm 700204 is triggered (Hyd_A_700204=True), hydraulics is disabled (Hyd_IsEnabled=False).", hasCause="Hyd_A_700204", hasEffect="Hyd_IsEnabled"];
+}
+`;
+
+            // Content of script.js
+// Colors for warnings and errors (severity-based)
+    var severityColors = {
+        1000: "#EE7D72",
+        500: "#E9CE5C",
+        undefined: "#EAEAEA"
+    };
+    
+    // Colors for node types
+    var nodeTypeColors = {
+        "Alarm": "#FFA673",      // Red for alarms
+        "Variable": "#0ABAB5",   // Blue for variables  
+        "default": "#95A5A6"     // Gray for unknown types
+    };
+    
+    // Generate a set of distinct colors for clusters
+    // Color palette with base colors and shades for hierarchical coloring
+    var clusterColorPalette = {
+        'h000': ['#D14747', '#D65B5B', '#DB7070', '#E08484', '#E59898'],  // Reds
+        'h030': ['#D18C47', '#D6995B', '#DBA570', '#E0B284', '#E5BF98'],  // Orange-yellows
+        'h060': ['#D1D147', '#D6D65B', '#DBDB70', '#E0E084', '#E5E598'],  // Yellows
+        'h090': ['#8CD147', '#99D65B', '#A5DB70', '#B2E084', '#BFE598'],  // Lime-greens
+        'h120': ['#47D147', '#5BD65B', '#70DB70', '#84E084', '#98E598'],  // Greens
+        'h150': ['#47D18C', '#5BD699', '#70DBA5', '#84E0B2', '#98E5BF'],  // Teals
+        'h180': ['#47D1D1', '#5BD6D6', '#70DBDB', '#84E0E0', '#98E5E5'],  // Cyans
+        'h210': ['#478CD1', '#5B98D6', '#70A5DB', '#84B2E0', '#98BFE5'],  // Sky-blues
+        'h240': ['#4747D1', '#5B5BD6', '#7070DB', '#8484E0', '#9898E5'],  // Purples
+        'h270': ['#8C47D1', '#985BD6', '#A570DB', '#B284E0', '#BF98E5'],  // Magentas
+        'h300': ['#D147D1', '#D65BD6', '#DB70DB', '#E084E0', '#E598E5'],  // Pinks
+        'h330': ['#D1478C', '#D65B99', '#DB70A5', '#E084B2', '#E598BF'],  // Coral-pinks
+    };
+    
+    // List of palette keys for easy access
+    var paletteKeys = Object.keys(clusterColorPalette);
+    
+    // Flat array of colors for fallback
+    var clusterColors = [
+        "#FFB300",  // Amber
+        "#7CB342",  // Lime Green
+        "#00ACC1",  // Teal
+        "#D4E157",  // Lime
+        "#29B6F6",  // Light Blue
+        "#FFD180",  // Amber Light
+        "#A5D6A7",  // Light Green
+        "#FF7043"   // Coral
+    ];
+    
+    // Cache for group color assignments to ensure consistency across sessions
+    const groupColorCache = {};
+    
+    // Cache for tracking which base color is assigned to which top-level group
+    const topLevelGroupColors = {};
+    
+    // Cache for tracking sibling positions to ensure consistent color assignment
+    const siblingPositionCache = {};
+    
+    // Try to load previously saved color assignments from localStorage
+    try {
+        const savedColors = localStorage.getItem('clusterColorAssignments');
+        if (savedColors) {
+            Object.assign(groupColorCache, JSON.parse(savedColors));
+            console.log("Loaded saved color assignments:", groupColorCache);
+            
+            // Initialize window._colorFamilyAssignments if needed
+            if (!window._colorFamilyAssignments) {
+                window._colorFamilyAssignments = {};
+            }
+            
+            // Try to load sibling position cache
+            const savedSiblingPositions = localStorage.getItem('siblingPositionCache');
+            if (savedSiblingPositions) {
+                Object.assign(siblingPositionCache, JSON.parse(savedSiblingPositions));
+                console.log("Loaded sibling position cache:", siblingPositionCache);
+            }
+        }
+    } catch (e) {
+        console.log("Could not load saved color assignments:", e);
+    }
+    
+    // Function to get a consistent hash value for a string
+    function getStringHash(str) {
+        let hash = 0;
+        if (str.length === 0) return hash;
+        
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        
+        return Math.abs(hash);
+    }
+    
+    // Function to check if a color is dark (to determine text color)
+    function isColorDark(hexColor) {
+        // Convert hex to RGB
+        const r = parseInt(hexColor.substr(1, 2), 16);
+        const g = parseInt(hexColor.substr(3, 2), 16);
+        const b = parseInt(hexColor.substr(5, 2), 16);
+        
+        // Calculate luminance - standard formula
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        
+        // Return true if the color is dark
+        return luminance < 0.5;
+    }
+    
+    // Function to get a color for a cluster based on hierarchy position
+    function getClusterColor(groupName) {
+        // If this group already has an assigned color, return it
+        if (groupColorCache[groupName]) {
+            return groupColorCache[groupName];
+        }
+        
+        // If hierarchy information is available, use it for hierarchical coloring
+        if (window._clusterHierarchy && window._clusterHierarchy[groupName]) {
+            const groupInfo = window._clusterHierarchy[groupName];
+            const hierarchyPath = groupInfo.path || [];
+            
+            // Skip the root node (usually "Lathe") when determining colors
+            // We want to start assigning base colors at the first level under root
+            
+            // Get the root node
+            const rootGroups = Object.keys(window._clusterHierarchy).filter(g => 
+                window._clusterHierarchy[g].parent === null);
+            const rootGroup = rootGroups.length > 0 ? rootGroups[0] : null;
+            
+            // Ensure parent group color is assigned first if not in cache
+            const parentGroup = groupInfo.parent;
+            if (parentGroup && !groupColorCache[parentGroup]) {
+                // Recursively get parent color first to ensure proper hierarchy
+                getClusterColor(parentGroup);
+            }
+            
+            // If this is the root group, give it a neutral color
+            if (rootGroup === groupName) {
+                const color = "#95A5A6"; // Neutral gray for root
+                groupColorCache[groupName] = color;
+                try {
+                    localStorage.setItem('clusterColorAssignments', JSON.stringify(groupColorCache));
+                } catch (e) {
+                    console.log("Could not save color assignments:", e);
+                }
+                return color;
+            }
+            
+            // Get the first-level group (direct child of root) in this node's path
+            let firstLevelGroup = null;
+            if (hierarchyPath.length >= 2 && hierarchyPath[0] === rootGroup) {
+                firstLevelGroup = hierarchyPath[1];
+            } else if (groupInfo.parent === rootGroup) {
+                firstLevelGroup = groupName;
+            }
+            
+            if (firstLevelGroup) {
+                // If we have a first level group, use it to determine the color family
+                
+                // Initialize color family assignments if needed
+                if (!window._colorFamilyAssignments) {
+                    window._colorFamilyAssignments = {};
+                }
+                
+                let paletteKey;
+                // Check if we already have a color family assigned for this top-level group
+                if (window._colorFamilyAssignments[firstLevelGroup]) {
+                    paletteKey = window._colorFamilyAssignments[firstLevelGroup];
+                } else {
+                    // Assign a new color family to this first-level group
+                    
+                    // First check if we have already assigned colors to other siblings
+                    // and find a color that hasn't been used yet
+                    const siblingGroups = window._clusterHierarchy[rootGroup]?.children || [];
+                    const usedPaletteKeys = new Set();
+                    
+                    // Collect all palette keys already in use by siblings
+                    siblingGroups.forEach(sibling => {
+                        if (window._colorFamilyAssignments[sibling]) {
+                            usedPaletteKeys.add(window._colorFamilyAssignments[sibling]);
+                        }
+                    });
+                    
+                    // Find an unused palette key if possible
+                    let availablePaletteKeys = paletteKeys.filter(key => !usedPaletteKeys.has(key));
+                    
+                    if (availablePaletteKeys.length > 0) {
+                        // Use the group's position among siblings to select from available colors
+                        const groupIndex = siblingGroups.indexOf(firstLevelGroup);
+                        if (groupIndex !== -1) {
+                            paletteKey = availablePaletteKeys[groupIndex % availablePaletteKeys.length];
+                        } else {
+                            // Use a hash of the group name for consistent assignment
+                            const hashValue = getStringHash(firstLevelGroup);
+                            paletteKey = availablePaletteKeys[hashValue % availablePaletteKeys.length];
+                        }
+                    } else {
+                        // All palette keys are used, so cycle through them
+                        const siblingIndex = siblingGroups.indexOf(firstLevelGroup);
+                        if (siblingIndex !== -1) {
+                            paletteKey = paletteKeys[siblingIndex % paletteKeys.length];
+                        } else {
+                            // Fallback: use a hash of the group name
+                            const hashValue = getStringHash(firstLevelGroup);
+                            paletteKey = paletteKeys[hashValue % paletteKeys.length];
+                        }
+                    }
+                    
+                    // Save this assignment for future use
+                    window._colorFamilyAssignments[firstLevelGroup] = paletteKey;
+                }
+                
+                // Now determine which shade to use based on both depth AND sibling position
+                const colorFamily = clusterColorPalette[paletteKey];
+                let depth = 0;
+                let siblingOffset = 0; // Used to offset sibling colors within the same depth
+                
+                // If this is the first-level group itself, depth = 0
+                // Otherwise, calculate depth and sibling position
+                if (groupName === firstLevelGroup) {
+                    depth = 0;
+                } else {
+                    // Calculate depth from the first level group (how many steps away)
+                    const firstLevelIndex = hierarchyPath.indexOf(firstLevelGroup);
+                    if (firstLevelIndex !== -1) {
+                        depth = hierarchyPath.length - firstLevelIndex - 1;
+                        
+                        // Find the parent group to determine sibling position
+                        const parentGroup = groupInfo.parent;
+                        
+                        if (parentGroup && window._clusterHierarchy[parentGroup]) {
+                            // Get siblings (children of the same parent)
+                            const siblings = window._clusterHierarchy[parentGroup].children || [];
+                            
+                            if (siblings.length > 1) {
+                                // Find this group's position among siblings
+                                const siblingIndex = siblings.indexOf(groupName);
+                                
+                                if (siblingIndex !== -1) {
+                                    // Check if we already have a cached sibling position
+                                    if (siblingPositionCache[groupName] !== undefined) {
+                                        siblingOffset = siblingPositionCache[groupName];
+                                    } else {
+                                        // Distribute siblings across the available shades for this depth
+                                        // We use modulo to keep within the available shades
+                                        siblingOffset = siblingIndex % colorFamily.length;
+                                        
+                                        // Cache this position for consistency
+                                        siblingPositionCache[groupName] = siblingOffset;
+                                        try {
+                                            localStorage.setItem('siblingPositionCache', JSON.stringify(siblingPositionCache));
+                                        } catch (e) {
+                                            console.log("Could not save sibling positions:", e);
+                                        }
+                                    }
+                                    console.log(`Group ${groupName} is sibling ${siblingIndex} of ${siblings.length}, offset: ${siblingOffset}`);
+                                }
+                            }
+                        }
+                    } else {
+                        // If the path doesn't include the first level group (should not happen)
+                        console.warn(`Path for ${groupName} doesn't include first level group ${firstLevelGroup}`);
+                        depth = groupInfo.depth > 1 ? groupInfo.depth - 1 : 0;
+                    }
+                }
+                
+                // Use a combination of depth and sibling position to select the shade
+                // We use modulo to ensure we stay within the available colors in the family
+                const shadeIndex = (depth + siblingOffset) % colorFamily.length;
+                const color = colorFamily[shadeIndex];
+                
+                groupColorCache[groupName] = color;
+                try {
+                    localStorage.setItem('clusterColorAssignments', JSON.stringify(groupColorCache));
+                } catch (e) {
+                    console.log("Could not save color assignments:", e);
+                }
+                
+                return color;
+            }
+        }
+        
+        // Fallback to the original hash-based method if hierarchy approach doesn't yield a result
+        const hashValue = getStringHash(groupName);
+        const colorIndex = hashValue % clusterColors.length;
+        const color = clusterColors[colorIndex];
+        
+        // Cache the color assignment for this group
+        groupColorCache[groupName] = color;
+        
+        // Save updated color assignments to localStorage
+        try {
+            localStorage.setItem('clusterColorAssignments', JSON.stringify(groupColorCache));
+        } catch (e) {
+            console.log("Could not save color assignments:", e);
+        }
+        
+        return color;
+    }
+    
+    // Function to get appropriate text color based on background
+    function getTextColorForBackground(backgroundColor) {
+        return isColorDark(backgroundColor) ? "white" : "black";
+    }
+    
+    // Function to pre-assign all cluster colors before clustering
+    function preAssignAllClusterColors() {
+        console.log("=== PRE-ASSIGNING ALL CLUSTER COLORS ===");
+        
+        if (!window._clusterHierarchy) {
+            console.log("No cluster hierarchy available");
+            return;
+        }
+        
+        // First find the root groups (depth 0)
+        const rootGroups = Object.keys(window._clusterHierarchy).filter(
+            group => !window._clusterHierarchy[group].parent
+        );
+        
+        console.log("Root groups for color assignment:", rootGroups);
+        
+        // Process groups in order of depth to ensure proper color inheritance
+        let allGroups = [];
+        Object.keys(window._clusterHierarchy).forEach(group => {
+            allGroups.push({
+                name: group,
+                depth: window._clusterHierarchy[group].path ? 
+                       window._clusterHierarchy[group].path.length - 1 : 0
+            });
+        });
+        
+        // Sort by depth (ascending) to ensure parents are processed before children
+        allGroups.sort((a, b) => a.depth - b.depth);
+        
+        // Pre-assign colors to all groups
+        allGroups.forEach(group => {
+            const color = getClusterColor(group.name);
+        });
+        
+        console.log("=== FINISHED PRE-ASSIGNING CLUSTER COLORS ===");
+    }
+    
+    // Load Graph from dot and assign colors to nodes
+    var None = null // unsure if still needed
+    var parsedData = vis.parseDOTNetwork(DOTstring);
+    parsedData.nodes.forEach(function (node) {
+        // Create title (displayed as tooltip) with hierarchical path, label, comment and examples
+        var titleLabel = node.label || node.id;
+        var titleComment = node.comment || '';
+        var titleExamples = node.examples || '';
+        
+        // Build hierarchical path from groupedBy and available hierarchy information
+        var hierarchicalPath = '';
+        
+        // Function to recursively build the hierarchical path by traversing up the parent chain
+        function buildHierarchicalPath(groupName) {
+            if (!groupName) {
+                return [];
+            }
+            
+            var path = [groupName];
+            var current = groupName;
+            
+            // Traverse up the hierarchy using GroupHierarchy parent information
+            while (current && GroupHierarchy[current] && GroupHierarchy[current].parent) {
+                var parent = GroupHierarchy[current].parent;
+                path.unshift(parent); // Add parent at the beginning of the path
+                current = parent;
+            }
+            
+            return path;
+        }
+        
+        // Build the hierarchical path if the node has groupedBy information
+        if (node.groupedBy) {
+            var pathArray = buildHierarchicalPath(node.groupedBy);
+            hierarchicalPath = pathArray.join('/');
+            // Reduced logging - only show path for debugging if needed
+            // console.log("Constructed hierarchical path for", node.id, ":", hierarchicalPath);
+        } else {
+            // console.log("No groupedBy information found for node:", node.id);
+        }
+        
+        // Build the title in three rows format
+        // First Row: <hierarchicalPath> | <label>
+        var firstRow = hierarchicalPath ? `${hierarchicalPath} | ${titleLabel}` : titleLabel;
+        node.title = firstRow;
+        
+        // Second Row: <comment>
+        if (titleComment) {
+            node.title += `\n${titleComment}`;
+        }
+        
+        // Third Row: Example: <example>
+        if (titleExamples) {
+            node.title += `\nExample: ${titleExamples}`;
+        }
+
+        // First check if node has severity color
+        if (node.severity && severityColors[node.severity]) {
+            node.color = severityColors[node.severity];
+        } 
+        // Then apply node type colors
+        else if (node.type && node.type.length > 0) {
+            // node.type comes from DOT as string like "['Variable']" or "['Alarm']"
+            // Parse the string to extract the actual type
+            var nodeType = "default";
+            try {
+                if (node.type.includes("'Variable'")) {
+                    nodeType = "Variable";
+                } else if (node.type.includes("'Alarm'")) {
+                    nodeType = "Alarm";
+                }
+            } catch (e) {
+                console.log("Error parsing node type for node:", node.id, node.type);
+            }
+            node.color = nodeTypeColors[nodeType] || nodeTypeColors["default"];
+        }
+        // Fallback to default gray
+        else {
+            node.color = nodeTypeColors["default"];
+        }
+    });
+
+    // Add tooltip to edges from comment property
+    parsedData.edges.forEach(function (edge) {
+        if (edge.comment) {
+            edge.title = edge.comment;
+        }
+    });
+
+    var options = parsedData.options;
+    var data = {
+        nodes: new vis.DataSet(parsedData.nodes),
+        edges: new vis.DataSet(parsedData.edges)
+    };
+    
+    // Function to assign parent group colors to nodes
+    function assignNodeColors() {
+        console.log("=== ASSIGNING PARENT GROUP COLORS TO NODES ===");
+        
+        // First, get all nodes and their group assignments
+        var allNodes = data.nodes.get();
+        
+        console.log("Processing", allNodes.length, "nodes for color assignment");
+        
+        // For each node, assign the color of its direct parent group
+        allNodes.forEach(function(node) {
+            if (node.groupedBy) {
+                // Get the color for this node's direct parent group
+                const groupColor = getClusterColor(node.groupedBy);
+                
+                // Store original color if needed
+                if (!node.originalColor) {
+                    node.originalColor = node.color;
+                }
+                
+                // Apply color based on node type
+                if (node.type && node.type.includes("'Alarm'")) {
+                    data.nodes.update({
+                        id: node.id,
+                        color: {
+                            background: groupColor,
+                            border: "#E74C3C", // Red border for alarms
+                            highlight: {background: groupColor, border: "#C0392B"}
+                        },
+                        borderWidth: 2,
+                        originalColor: node.originalColor
+                    });
+                } else {
+                    data.nodes.update({
+                        id: node.id,
+                        color: {
+                            background: groupColor,
+                            border: groupColor,
+                            highlight: {background: groupColor, border: "#2B2B2B"}
+                        },
+                        originalColor: node.originalColor
+                    });
+                }
+            }
+        });
+        
+        console.log("=== FINISHED ASSIGNING PARENT GROUP COLORS TO NODES ===");
+    }
+
+    // Function to assign parent group colors to all nodes upfront
+    function assignNodeColorsBasedOnParentGroups() {
+        console.log("=== ASSIGNING PARENT GROUP COLORS TO NODES ===");
+        
+        if (!window._clusterHierarchy) {
+            console.log("No cluster hierarchy available, skipping node color assignment");
+            return;
+        }
+        
+        // Get all nodes
+        var allNodes = data.nodes.get();
+        
+        // First ensure all top-level groups have a color assigned
+        // This ensures consistency in color assignment regardless of which nodes are processed first
+        if (window._clusterHierarchy) {
+            // Find the root group
+            const rootGroups = Object.keys(window._clusterHierarchy).filter(g => 
+                window._clusterHierarchy[g].parent === null);
+            const rootGroup = rootGroups.length > 0 ? rootGroups[0] : null;
+            
+            if (rootGroup) {
+                // Pre-assign colors to all first-level groups (direct children of root)
+                const firstLevelGroups = window._clusterHierarchy[rootGroup]?.children || [];
+                
+                firstLevelGroups.forEach(function(groupName) {
+                    // This will assign and cache colors for the top-level groups
+                    getClusterColor(groupName);
+                });
+                
+                // Now pre-assign colors to all child groups to ensure consistent color assignment
+                // This ensures siblings get different shades at every level of the hierarchy
+                function assignColorsForGroup(groupName) {
+                    // Get direct children of this group
+                    const childGroups = window._clusterHierarchy[groupName]?.children || [];
+                    
+                    // Assign colors to all children (siblings)
+                    childGroups.forEach(function(childGroup, index) {
+                        // This will assign and cache the color
+                        getClusterColor(childGroup);
+                        
+                        // Recursively assign colors to its children
+                        assignColorsForGroup(childGroup);
+                    });
+                }
+                
+                // Start the recursive color assignment from first-level groups
+                firstLevelGroups.forEach(function(groupName) {
+                    assignColorsForGroup(groupName);
+                });
+            }
+        }
+        
+        // For each node, determine its parent group and assign the color
+        allNodes.forEach(function(node) {
+            if (node.groupedBy) {
+                const parentGroup = node.groupedBy;
+                const parentColor = getClusterColor(parentGroup);
+                
+                // Store original color if not already stored
+                if (!node.originalColor) {
+                    node.originalColor = node.color;
+                }
+                
+                // For alarm nodes, keep a red border
+                if (node.type && node.type.includes("'Alarm'")) {
+                    data.nodes.update({
+                        id: node.id,
+                        color: {
+                            background: parentColor,
+                            border: "#E74C3C", // Red border for alarms
+                            highlight: {background: parentColor, border: "#C0392B"}
+                        },
+                        borderWidth: 2
+                    });
+                } else {
+                    data.nodes.update({
+                        id: node.id,
+                        color: {
+                            background: parentColor,
+                            border: parentColor,
+                            highlight: {background: parentColor, border: "#2B2B2B"}
+                        }
+                    });
+                }
+            }
+        });
+        
+        console.log("=== FINISHED ASSIGNING PARENT GROUP COLORS TO NODES ===");
+    }
+
+    // Elements (containers, buttons) as global variables
+    // Layout buttons commented out - uncomment to restore functionality
+    // var hierarchicalWideButton = document.getElementById('set-hierarchical-wide-layout-button');
+    // var hierarchicalTightButton = document.getElementById('set-hierarchical-tight-layout-button');
+    // var dynamicLayoutButton = document.getElementById('set-dynamic-layout-button');
+    var resetButton = document.getElementById('reset-button');
+    var openAllButton = document.getElementById('open-all-button');
+    var fitScreenButton = document.getElementById('fit-screen-button');
+    // Physics button commented out - uncomment to restore functionality
+    // var physicsOnOffButton = document.getElementById('physics-on-off-button');
+    var networkContainer = document.getElementById('networkContainer');
+    
+    var options = {
+        nodes: {
+            font: { color: 'black', size: 14 },
+            size: 30,
+            shape: 'circle',
+            widthConstraint: 65,
+            borderWidth: 1
+        },
+        edges: {
+            "smooth": false,
+            'length': 250,
+            'width': 1,
+            arrows: {
+                to: { enabled: true, scaleFactor: 0.5 }
+            },
+            color: {
+                color: 'grey',
+                //highlight:'red',
+                hover: '#d3d2cd',
+                inherit: false,
+                opacity: 1.0
+            },
+            font: { size: 14, align: 'middle' }
+        },
+        interaction: {
+            hideEdgesOnDrag: true,
+        },
+        physics: false,
+        layout: {
+            improvedLayout: false,
+            hierarchical: {
+                enabled: false
+            }
+        }
+    };
+
+    // Functionality for Loading Spinner
+    function showLoadingSpinner() {
+        document.getElementById("loader").style.display = "block";
+    }
+
+    function hideLoadingSpinner() {
+        document.getElementById("loader").style.display = "none";
+    }    ///// Dropdown Functionality - commented out /////    
+    // Layout dropdown functionality commented out - uncomment to restore functionality
+    // Get the dropdown button and content by their IDs
+    // var dropdownButton = document.getElementById('layout-dropdown-button');
+    // var dropdownContent = document.getElementById('layout-dropdown-content');
+    // var networkContainer = document.querySelector('#networkContainer');
+
+    // Listen for the mouseover event on the dropdown
+    // dropdown.addEventListener('mouseover', function() {
+    //     // When the mouse is over the dropdown, disable pointer events on the network container
+    //     networkContainer.style.pointerEvents = 'none';
+    // });
+
+    // Listen for the mouseout event on the dropdown
+    // dropdown.addEventListener('mouseout', function() {
+    //     // When the mouse leaves the dropdown, enable pointer events on the network container
+    //     networkContainer.style.pointerEvents = 'auto';
+    // });
+
+    // Show the dropdown content when the mouse enters the dropdown button
+    // dropdownButton.addEventListener('mouseover', function() {
+    //     dropdownContent.classList.add('show');
+    // });
+    
+    // Close the dropdown if the user clicks outside of it
+    // window.onclick = function(event) {
+    //     if (!event.target.matches('.dropdown-main-buttons')) {
+    //         var dropdowns = document.getElementsByClassName("dropdown-content");
+    //         var i;
+    //         for (i = 0; i < dropdowns.length; i++) {
+    //             var openDropdown = dropdowns[i];
+    //             if (openDropdown.classList.contains('show')) {
+    //                 openDropdown.classList.remove('show');
+    //             }
+    //         }
+    //     }
+    // }
+    ///// END Dropdown /////
+    
+    // Display general of graph in Sidebar
+    var default_sidebar;
+    function init_sidebar(){
+        console.log("Init Sidebar")
+        var sidebarContent = document.getElementById('sidebar-content');
+        var nodeCount = data.nodes.length;
+        var edgeCount = data.edges.length;
+        
+        var graphSizeElement = document.createElement('div');
+        graphSizeElement.innerHTML = `<h2>Overall graph specs:</h2>
+        <p><strong>#causal nodes: </strong> ${nodeCount}</p>
+        <p><strong>#causal edges: </strong> ${edgeCount}</p>
+        
+        <strong><span style="color: #E9CE5C;">Select a node, edge or cluster to get more information about it.</span></strong>`;
+        sidebarContent.insertBefore(graphSizeElement, sidebarContent.firstChild);
+        sidebarContent.innerHTML += '<br>';
+        default_sidebar = sidebarContent.innerHTML; // save content of the sidebar for later display
+    }
+    
+    function show_defaultSidebarContent(){
+        // Show default sidebar
+        var sidebarContent = document.getElementById('sidebar-content');
+        sidebarContent.innerHTML = default_sidebar;
+    }
+    
+    // Init Sidebar first and rest of functionality after loading
+    init_sidebar();
+    
+    window.onload = function(){
+        // Initializing network
+        console.log('Initial drawing of network...')
+        var network = new vis.Network(networkContainer, data, options);
+        
+        // Ensure physics is DISABLED on startup (locked off)
+        network.setOptions({physics: false});
+        console.log('Initial physics state set to disabled (locked)');
+        
+        // Apply parent group colors to nodes
+        assignNodeColors();
+        console.log('Node colors assigned based on parent groups');
+
+        // Init global variables
+        var clusterPositions = {};  // needs to be initialized before first call to clusterAllGroups
+        var clusterIDs = [];
+        var allGroupsClustered = false;
+        var dynamicPhysicsEnabled = false; // Set to false by default
+        
+        // Create a copy of options with physics enabled for later use
+        var currentOptionsWithPhysics = JSON.parse(JSON.stringify(options));
+        currentOptionsWithPhysics.physics = true;
+        
+        var stopContinuousNetworkFit = new Date().getTime(); 
+        var currentCenter = network.getViewPosition(); 
+        var keepCenter = false;
+
+        // --- NEW: Centralized State Management ---
+        var graphState = {
+            openedClusters: {}, // tracks which clusters are opened
+            allClustersOpen: false, // tracks if all clusters should remain open
+            physicsEnabled: false, // Set physics to disabled by default
+            physicsButtonDisabled: true // Add flag to track if button is disabled
+        };
+        var stateHistory = [];
+        var currentStateIndex = -1;
+        var hierarchyEdges = []; // This will be managed by the render function now
+
+        // Initial update of button displays - commented out
+        // updatePhysicsOnOffButtonDisplay(); // Call once during init
+
+        // Function to save the current state for undo/redo
+        function saveState() {
+            if (currentStateIndex < stateHistory.length - 1) {
+                stateHistory = stateHistory.slice(0, currentStateIndex + 1);
+            }
+            const newState = JSON.parse(JSON.stringify(graphState));
+            stateHistory.push(newState);
+            currentStateIndex++;
+            console.log("State saved. History size:", stateHistory.length, "Current index:", currentStateIndex);
+        }
+
+        // Function to update the state and trigger a re-render
+        function updateState(updater) {
+            const newState = updater(JSON.parse(JSON.stringify(graphState)));
+            graphState = newState;
+            saveState();
+            renderGraphFromState();
+        }
+
+        function undo() {
+            if (currentStateIndex > 0) {
+                currentStateIndex--;
+                graphState = JSON.parse(JSON.stringify(stateHistory[currentStateIndex]));
+                console.log("Undo to state index:", currentStateIndex);
+                renderGraphFromState();
+            } else {
+                console.log("Cannot undo further.");
+            }
+        }
+
+        function redo() {
+            if (currentStateIndex < stateHistory.length - 1) {
+                currentStateIndex++;
+                graphState = JSON.parse(JSON.stringify(stateHistory[currentStateIndex]));
+                console.log("Redo to state index:", currentStateIndex);
+                renderGraphFromState();
+            } else {
+                console.log("Cannot redo further.");
+            }
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'z') {
+                undo();
+            }
+            if (event.ctrlKey && event.key === 'y') {
+                redo();
+            }
+        });
+
+        function renderGraphFromState() {
+            console.log("=== RENDERING GRAPH FROM STATE ===");
+            
+            // Clear any hierarchy edges if they exist
+            if (hierarchyEdges.length > 0) data.edges.remove(hierarchyEdges);
+            hierarchyEdges = [];
+            
+            // First apply physics state from global state
+            console.log("Current physics state:", dynamicPhysicsEnabled, "Global state:", graphState.physicsEnabled);
+            
+            // Force physics to be disabled if button is disabled
+            if (graphState.physicsButtonDisabled) {
+                graphState.physicsEnabled = false;
+                console.log("Physics button disabled - forcing physics to remain disabled");
+            }
+            
+            // Always set physics according to the global state, not just when they differ
+            if (graphState.physicsEnabled) {
+                network.setOptions(currentOptionsWithPhysics);
+                dynamicPhysicsEnabled = true;
+            } else {
+                network.setOptions({
+                    physics: false,
+                    edges: {
+                        "smooth": false
+                    }
+                });
+                dynamicPhysicsEnabled = false;
+            }
+            // updatePhysicsOnOffButtonDisplay();
+            
+            // Check if we're in "all clusters open" mode
+            if (graphState.allClustersOpen) {
+                console.log("All clusters are explicitly open, skipping recreation");
+                
+                // Still ensure colors are properly assigned to nodes even when all clusters are open
+                if (window._clusterHierarchy) {
+                    preAssignAllClusterColors();
+                    assignNodeColorsBasedOnParentGroups();
+                }
+                
+                applyHierarchicalLayoutAfterOperation();
+                console.log("=== FINISHED RENDERING GRAPH FROM STATE (ALL OPEN MODE) ===");
+                return;
+            }
+            
+            // Track which opened clusters have been processed
+            const processedClusters = {};
+            
+            // Get a list of clusters that need to be opened in order by hierarchy (deepest first)
+            let clustersToOpen = [];
+            for (const clusterId in graphState.openedClusters) {
+                // Extract group name from cluster ID
+                const groupName = clusterId.replace("cluster_", "");
+                let depth = 0;
+                
+                // Get depth from hierarchy if available
+                if (window._clusterHierarchy && window._clusterHierarchy[groupName]) {
+                    depth = window._clusterHierarchy[groupName].depth || 0;
+                }
+                
+                clustersToOpen.push({clusterId, depth});
+            }
+            
+            // Sort by depth in descending order
+            clustersToOpen.sort((a, b) => b.depth - a.depth);
+            
+            console.log("Cluster opening order:", clustersToOpen.map(c => c.clusterId));
+            
+            // First recreate necessary clusters
+            recreateAllNecessaryClusters();
+            
+            // Then open clusters that need to be opened in the correct order
+            clustersToOpen.forEach(({clusterId}) => {
+                // Skip if already processed
+                if (processedClusters[clusterId]) {
+                    return;
+                }
+                
+                // Mark as processed
+                processedClusters[clusterId] = true;
+                
+                // Open the cluster if it exists
+                if (network.body.nodes[clusterId] && network.isCluster(clusterId)) {
+                    console.log("Opening cluster:", clusterId);
+                    network.openCluster(clusterId);
+                } else {
+                    console.log("Cluster not found or not a cluster:", clusterId);
+                    // Keep it in the state as it might be needed for hierarchy tracking
+                }
+            });
+
+            applyHierarchicalLayoutAfterOperation();
+            console.log("=== FINISHED RENDERING GRAPH FROM STATE ===");
+        }
+
+        // Simple cluster handling without ghost nodes
+        function openCluster(clusterId) {
+            console.log("=== OPENING CLUSTER ===");
+            if (network.body.nodes[clusterId] && network.isCluster(clusterId)) {
+                try {
+                    // Extract the group name from the cluster ID
+                    const groupName = clusterId.replace("cluster_", "");
+                    
+                    // Try to get the color from the cluster node directly
+                    let clusterColor = null;
+                    const clusterNode = network.body.nodes[clusterId];
+                    if (clusterNode && clusterNode.options && clusterNode.options.color && clusterNode.options.color.background) {
+                        clusterColor = clusterNode.options.color.background;
+                    } else {
+                        // Fallback to our color generator
+                        clusterColor = getClusterColor(groupName);
+                    }
+                    
+                    // Get nodes in the cluster before opening it
+                    const nodesInCluster = network.getNodesInCluster(clusterId);
+                    
+                    network.openCluster(clusterId);
+                    
+                    // No need to update node colors - they already have their direct parent group's color
+                    // from the initial assignNodeColorsBasedOnParentGroups function
+                    
+                    updateState(currentState => {
+                        // Record that the cluster was opened - only mark this specific cluster as opened
+                        currentState.openedClusters[clusterId] = true;
+                        
+                        // Preserve physics state
+                        currentState.physicsEnabled = graphState.physicsEnabled;
+                        
+                        // Log information about the opened cluster
+                        if (window._clusterHierarchy && window._clusterHierarchy[groupName]) {
+                            const childGroups = window._clusterHierarchy[groupName].children || [];
+                            console.log(`Opened cluster ${clusterId} with ${childGroups.length} child groups:`, childGroups);
+                        }
+                        
+                        return currentState;
+                    });
+                } catch (error) {
+                    console.error("Error opening cluster:", error);
+                    // If there's an error, remove this cluster from our state
+                    updateState(currentState => {
+                        delete currentState.openedClusters[clusterId];
+                        return currentState;
+                    });
+                }
+            } else {
+                console.log("Cannot open cluster - cluster not found or not a cluster:", clusterId);
+            }
+        }
+
+        // Function to re-apply layout after an operation
+        function applyHierarchicalLayoutAfterOperation() {
+            console.log("=== APPLYING LAYOUT AFTER OPERATION ===");
+            
+            // Allow time for all data modifications to complete
+            setTimeout(function() {
+                console.log("Timeout executed, applying layout...");
+                
+                // Apply hierarchical layout
+                console.log("Applying hierarchical layout...");
+                var hierarchicalOptions = {
+                    layout: {
+                        hierarchical: {
+                            enabled: true,
+                            direction: 'UD',
+                            sortMethod: 'directed',
+                            levelSeparation: 150,
+                            nodeSpacing: 150
+                        }
+                    },
+                    // IMPORTANT: Always force physics off when button is disabled
+                    physics: graphState.physicsButtonDisabled ? false : graphState.physicsEnabled
+                };
+                
+                // Apply hierarchical layout
+                network.setOptions(hierarchicalOptions);
+                console.log("Hierarchical layout applied with physics:", graphState.physicsEnabled);
+                
+                // Fit the network to show all nodes
+                network.fit();
+                console.log("Network fitted");
+                
+            }, 100);
+            
+            console.log("=== LAYOUT APPLICATION COMPLETE ===");
+        }
+
+        // Helper function to get direct children for a group
+        function getDirectChildrenForGroup(groupName) {
+            console.log("Getting direct children for group:", groupName);
+            var directChildren = [];
+            
+            if (!window._clusterHierarchy || !window._clusterHierarchy[groupName]) {
+                console.log("Group not found in hierarchy");
+                return directChildren;
+            }
+            
+            var groupInfo = window._clusterHierarchy[groupName];
+            
+            // Add direct child groups as clusters
+            if (groupInfo.children && groupInfo.children.length > 0) {
+                groupInfo.children.forEach(function(childGroup) {
+                    var childClusterId = "cluster_" + childGroup;
+                    directChildren.push(childClusterId);
+                    console.log("Added child cluster:", childClusterId);
+                });
+            }
+            
+            // Add direct nodes (nodes that belong directly to this group)
+            if (groupInfo.directNodes && groupInfo.directNodes.length > 0) {
+                groupInfo.directNodes.forEach(function(nodeId) {
+                    directChildren.push(nodeId);
+                    console.log("Added direct node:", nodeId);
+                });
+            }
+            
+            console.log("Direct children for", groupName, ":", directChildren);
+            return directChildren;
+        }
+        
+        // Helper function to create sub-clusters and preserve existing opened clusters
+        function createSubClusters(parentGroupName) {
+            console.log("Creating sub-clusters for:", parentGroupName);
+            
+            if (!window._clusterHierarchy || !window._clusterHierarchy[parentGroupName]) {
+                return;
+            }
+            
+            var parentInfo = window._clusterHierarchy[parentGroupName];
+            if (!parentInfo.children || parentInfo.children.length === 0) {
+                return;
+            }
+            
+            setTimeout(function() {
+                console.log("=== RECREATING ALL NECESSARY CLUSTERS ===");
+                recreateAllNecessaryClusters();
+                network.fit();
+            }, 100);
+        }
+        
+        // Function to recreate all clusters that should exist based on current state
+        function recreateAllNecessaryClusters() {
+            console.log("Recreating all necessary clusters...");
+            console.log("Currently opened clusters:", graphState.openedClusters);
+            
+            if (!window._clusterHierarchy) {
+                console.log("No cluster hierarchy available");
+                return;
+            }
+            
+            // Pre-assign all cluster colors to ensure consistency
+            preAssignAllClusterColors();
+            
+            // First, identify the opened clusters and their direct children that need clustering
+            var needsClustering = {};
+            var topLevelGroups = [];
+            
+            // Identify root-level groups and opened parent clusters
+            Object.keys(window._clusterHierarchy).forEach(function(groupName) {
+                var groupInfo = window._clusterHierarchy[groupName];
+                var clusterId = "cluster_" + groupName;
+                
+                // Skip if this group is currently opened
+                if (graphState.openedClusters[clusterId]) {
+                    // This is an opened cluster - mark its direct children for clustering
+                    if (groupInfo.children && groupInfo.children.length > 0) {
+                        console.log("Found opened parent:", groupName, "with children:", groupInfo.children);
+                        groupInfo.children.forEach(function(childName) {
+                            needsClustering[childName] = true;
+                        });
+                    }
+                    return;
+                }
+                
+                // Track top-level groups (no parent or parent is opened)
+                if (!groupInfo.parent) {
+                    topLevelGroups.push(groupName);
+                }
+            });
+            
+            console.log("Groups needing clustering:", Object.keys(needsClustering));
+            console.log("Top level groups:", topLevelGroups);
+            
+            // First create top-level clusters if not opened
+            topLevelGroups.forEach(function(groupName) {
+                var clusterId = "cluster_" + groupName;
+                
+                // Skip if already opened
+                if (graphState.openedClusters[clusterId]) {
+                    return;
+                }
+                
+                createClusterIfNeeded(groupName);
+            });
+            
+            // Then create child clusters for opened parents
+            Object.keys(needsClustering).forEach(function(groupName) {
+                var clusterId = "cluster_" + groupName;
+                
+                // Skip if already opened
+                if (graphState.openedClusters[clusterId]) {
+                    return;
+                }
+                
+                createClusterIfNeeded(groupName);
+            });
+            
+            // Helper function to create a cluster if it doesn't exist yet
+            function createClusterIfNeeded(groupName) {
+                var clusterId = "cluster_" + groupName;
+                var groupInfo = window._clusterHierarchy[groupName];
+                
+                // Skip if cluster already exists
+                if (network.body.nodes[clusterId]) {
+                    console.log("Cluster", clusterId, "already exists, skipping");
+                    return;
+                }
+                
+                // Create the cluster
+                var allDescendantNodes = groupInfo.allDescendantNodes;
+                if (allDescendantNodes && allDescendantNodes.length > 0) {
+                    // Filter out nodes that are already in other clusters
+                    var availableNodes = allDescendantNodes.filter(function(nodeId) {
+                        return network.body.nodes[nodeId] && !network.isCluster(nodeId);
+                    });
+                    
+                    if (availableNodes.length > 0) {
+                        // Get a consistent color for this cluster
+                        const clusterColor = getClusterColor(groupName);
+                        
+                        var clusterProps = {
+                            id: clusterId,
+                            label: groupName,
+                            shape: 'ellipse',
+                            size: 35, // Slightly larger than regular nodes
+                            color: {
+                                background: clusterColor,
+                                border: '#2B2B2B'
+                            },
+                            font: {color: getTextColorForBackground(clusterColor), size: 14},
+                            borderWidth: 2,
+                            margin: 1, // Add some margin to prevent content from touching the border
+                            widthConstraint: 65, // Smaller than before
+                            heightConstraint: 40  // Smaller than before
+                        };
+                        
+                        console.log("Creating cluster:", clusterId, "with nodes:", availableNodes);
+                        
+                        try {
+                            // Color the nodes that will be in this cluster
+                            availableNodes.forEach(nodeId => {
+                                const node = data.nodes.get(nodeId);
+                                if (node) {
+                                    // Store original color if not already stored
+                                    if (!node.originalColor) {
+                                        node.originalColor = node.color;
+                                    }
+                                    
+                                    // For alarm nodes, keep a red border
+                                    if (node.type && node.type.includes("'Alarm'")) {
+                                        data.nodes.update({
+                                            id: nodeId,
+                                            color: {
+                                                background: clusterColor,
+                                                border: "#E74C3C", // Red border for alarms
+                                                highlight: {background: clusterColor, border: "#C0392B"}
+                                            },
+                                            borderWidth: 2
+                                        });
+                                    } else {
+                                        data.nodes.update({
+                                            id: nodeId,
+                                            color: {
+                                                background: clusterColor,
+                                                border: clusterColor,
+                                                highlight: {background: clusterColor, border: "#2B2B2B"}
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            
+                            network.cluster({
+                                joinCondition: function(nodeOptions) {
+                                    return availableNodes.indexOf(nodeOptions.id) !== -1;
+                                },
+                                clusterNodeProperties: clusterProps
+                            });
+                            console.log("Successfully created cluster:", clusterId);
+                        } catch (error) {
+                            console.error("Error creating cluster", clusterId, ":", error);
+                        }
+                    } else {
+                        console.log("No available nodes for cluster:", clusterId);
+                    }
+                }
+            }
+            
+            console.log("=== FINISHED RECREATING CLUSTERS ===");
+        }
+        
+        // Initializing network layout and physics
+        if (Groups.length > 0) {
+            console.log(' | Starting in clustered view...')
+            console.log(' | Groups:', Groups);
+            console.log(' | GroupHierarchy:', GroupHierarchy);
+            // Cluster after the network is ready
+            setTimeout(function() {
+                console.log(' | Network ready, starting clustering...');
+                clusterIDs = clusterAllGroups(Groups);
+                console.log(' | ClusterIDs returned:', clusterIDs);
+                saveState(); // Save the initial state
+            }, 100);
+        } else {
+            // if no groups, use default layout
+            if ((data.nodes.length+data.edges.length) < 300) {
+                console.log(' | Starting in dynamic view..')
+                setLayout('dynamic');
+            } else {
+                console.log(' | Starting in hierarchical view..')
+                setLayout('hierarchical-tight');
+            }
+        }
+        // Hide Loading Spinner
+        hideLoadingSpinner();
+
+        // Function to update edge colors
+        function updateEdgeColors(selectedNodeId, Ausgehende_Kante_Farbe, Eingehende_Kante_Farbe) {
+            var connectedEdges = network.getConnectedEdges(selectedNodeId);
+
+            resetAllEdgeColors()
+
+            connectedEdges.forEach(function (edgeId) {
+                var edge = data.edges.get(edgeId);
+                if (edge) {
+                    if (edge.from === selectedNodeId) {
+                        // Outgoing edge (blue)
+                        data.edges.update({ id: edge.id, color: Ausgehende_Kante_Farbe });
+                    } else if (edge.to === selectedNodeId) {
+                        // Incoming edge (red)
+                        data.edges.update({ id: edge.id, color: Eingehende_Kante_Farbe });
+                    } 
+                    addEdgeIdToColoredEdgeIDs(edge.id);
+                } else {
+                    console.error('No edge found with id:', edgeId);
+                }
+            });
+        }
+
+
+        network.on("doubleClick", function (params) {
+            console.log("=== DOUBLE CLICK EVENT ===");
+            console.log("Params:", params);
+            console.log("Nodes clicked:", params.nodes);
+            console.log("Number of nodes:", params.nodes.length);
+            
+            if (params.nodes.length === 1) {
+                var nodeId = params.nodes[0];
+                console.log("Node ID:", nodeId);
+                
+                try {
+                    // Check if it's a regular cluster
+                    if (network.body.nodes[nodeId] && network.isCluster(nodeId)) {
+                        console.log("Clicked on cluster, opening it");
+                        openCluster(nodeId);
+                    }
+                    else {
+                        console.log("Clicked on regular node, no action");
+                    }
+                } catch (error) {
+                    console.error("Error handling double click:", error);
+                }
+            } else {
+                console.log("Multiple nodes or no nodes clicked, ignoring");
+            }
+            console.log("=== DOUBLE CLICK EVENT END ===");
+        });
+        
+        
+        // Function to open all clusters 
+        function openAllClusters() {
+            console.log("=== OPENING ALL CLUSTERS ===");
+            
+            // Clear any cached color assignments to ensure only current palette colors are used
+            // Only clear if we're doing a fresh clustering operation, not when opening existing clusters
+            if (allGroupsClustered) {
+                console.log("Clearing cached color assignments from localStorage");
+                localStorage.removeItem('clusterColorAssignments');
+                Object.keys(groupColorCache).forEach(key => delete groupColorCache[key]);
+                
+                // Clear sibling position cache
+                localStorage.removeItem('siblingPositionCache');
+                Object.keys(siblingPositionCache).forEach(key => delete siblingPositionCache[key]);
+                
+                // Also clear color family assignments to ensure fresh assignment
+                if (window._colorFamilyAssignments) {
+                    window._colorFamilyAssignments = {};
+                }
+                
+                // Immediately pre-assign all cluster colors to ensure consistent hierarchy
+                // This ensures colors are determined before any clustering operations
+                if (window._clusterHierarchy) {
+                    preAssignAllClusterColors();
+                }
+            }
+            
+            // If all Groups clustered store current position before opening any cluster 
+            if (allGroupsClustered) {
+                clusterPositions = network.getPositions(clusterIDs);
+            }
+            
+            // Get all cluster nodes first, prioritizing deepest clusters first
+            let clusterNodes = [];
+            // First, collect all the clusters with their depth information
+            let clustersWithDepth = [];
+            for (var nodeId in network.body.nodes) {
+                try {
+                    if (network.body.nodes[nodeId] && network.isCluster(nodeId)) {
+                        const groupName = nodeId.replace("cluster_", "");
+                        let depth = 0;
+                        
+                        // Try to get the depth from the hierarchy
+                        if (window._clusterHierarchy && window._clusterHierarchy[groupName]) {
+                            depth = window._clusterHierarchy[groupName].depth || 0;
+                        }
+                        
+                        clustersWithDepth.push({nodeId, depth});
+                        console.log("Found cluster to open:", nodeId, "with depth:", depth);
+                    }
+                } catch (error) {
+                    console.error("Error checking if node is cluster:", nodeId, error);
+                }
+            }
+            
+            // Sort by depth in descending order (deepest clusters first)
+            clustersWithDepth.sort((a, b) => b.depth - a.depth);
+            clusterNodes = clustersWithDepth.map(item => item.nodeId);
+            
+            console.log("Found", clusterNodes.length, "clusters to open");
+            
+            // Open all clusters in the correct order (deepest first)
+            clusterNodes.forEach(nodeId => {
+                try {
+                    console.log("Opening cluster:", nodeId);
+                    
+                    // Get the group name and color
+                    const groupName = nodeId.replace("cluster_", "");
+                    
+                    // Try to get the color from the cluster node directly
+                    let clusterColor = null;
+                    const clusterNode = network.body.nodes[nodeId];
+                    if (clusterNode && clusterNode.options && clusterNode.options.color && clusterNode.options.color.background) {
+                        clusterColor = clusterNode.options.color.background;
+                    } else {
+                        // Fallback to our color generator
+                        clusterColor = getClusterColor(groupName);
+                    }
+                    
+                    // Get nodes in cluster before opening
+                    const nodesInCluster = network.getNodesInCluster(nodeId);
+                    
+                    // Open the cluster
+                    network.openCluster(nodeId);
+                    
+                    // No need to update node colors - they already have their direct parent group's color
+                    // from the initial assignNodeColorsBasedOnParentGroups function
+                    
+                } catch (error) {
+                    console.error("Error opening cluster:", nodeId, error);
+                }
+            });
+            
+            // Set state to indicate all clusters are open
+            updateState(currentState => {
+                // Clear any previous opened cluster state
+                currentState.openedClusters = {};
+                currentState.allClustersOpen = true;  // Add flag to prevent re-clustering
+                // Preserve physics state
+                currentState.physicsEnabled = graphState.physicsEnabled;
+                return currentState;
+            });
+            
+            allGroupsClustered = false;
+            
+            // Update the button styling - removed to prevent sticky white borders
+            // resetButton.classList.remove('active-main-buttons');
+            // resetButton.classList.add('main-buttons');
+            // openAllButton.classList.add('active-main-buttons');
+            // openAllButton.classList.remove('main-buttons');
+            
+            enableContinuousNetworkFit(1500, true);
+            console.log("=== FINISHED OPENING ALL CLUSTERS ===");
+        }
+        
+        // Variable to store the ids of the colored edges
+        var coloredEdgeIDs = [];
+
+        // Function to add an edge id to coloredEdgeIDs
+        function addEdgeIdToColoredEdgeIDs(edgeId) {
+            if (!coloredEdgeIDs.includes(edgeId)) {
+                coloredEdgeIDs.push(edgeId);
+            }
+        }
+
+        // Function to remove an edge id from coloredEdgeIDs
+        function removeEdgeIdFromColoredEdgeIDs(edgeId) {
+            var index = coloredEdgeIDs.indexOf(edgeId);
+            if (index !== -1) {
+                coloredEdgeIDs.splice(index, 1);
+            }
+        }
+        
+        // Function for updating all edge colors of colored edges to gray.
+        function resetAllEdgeColors() {
+            coloredEdgeIDs.forEach(function (edgeId) {
+                data.edges.update({ id: edgeId, color: "gray" });
+            });
+            coloredEdgeIDs = []; // Clear the array
+        }
+
+        //  Adding an "on click" event to the network.
+        network.on("click", function (params) {
+            if (params.nodes.length === 0 && params.edges.length === 0) {
+                // Leerer Raum (Hintergrund) wurde angeklickt
+                resetAllEdgeColors();
+                show_defaultSidebarContent();
+            }
+        });
+
+        network.on("selectNode", function (params) {
+            if (params.nodes.length > 0) {
+                // Init SidebarContent
+                var sidebarContent = document.getElementById('sidebar-content');
+                sidebarContent.innerHTML = '';
+                
+                // Determine whether the node is in a cluster or not
+                var selectedNodeIsPartOfCluster = false; 
+                if (params.nodes.length === 1 && network.isCluster(params.nodes[0])) {
+                    selectedNodeIsPartOfCluster = true;
+                } else {
+                    selectedNodeIsPartOfCluster = false;
+                }
+
+                // If the selected node is not part of a cluster, update the edge colors and give information about edges etc.
+                if (!selectedNodeIsPartOfCluster) {
+                    var nodeId = params.nodes[0];
+                    var nodeInfo = data.nodes.get(nodeId);
+    
+                    updateEdgeColors(nodeId, "#0194C2", "red");
+    
+                    // Nodeinformationen
+                    var nodeInfoElement = document.createElement('div');
+                    let node_summaryLabel = '';
+                    let node_detailsContent = '';
+    
+                    if (nodeInfo !== undefined && nodeInfo !== null && typeof nodeInfo === 'object') {
+                        Object.keys(nodeInfo).forEach(function (prop) {
+                            if (
+                                nodeInfo.hasOwnProperty(prop) &&
+                                nodeInfo[prop] !== undefined &&
+                                prop !== 'id' &&
+                                prop !== 'arrows' &&
+                                prop !== 'color' &&
+                                prop !== 'key'
+                            ) {
+                                // // extract label from nodeInfo as header for summary, all other properties are added to details
+                                if (prop === 'label') {
+                                    node_summaryLabel = nodeInfo[prop];
+                                } else {
+                                    node_detailsContent += `<p><strong>${prop}:</strong> ${nodeInfo[prop]}</p>`;
+                                }
+                            }
+                        });
+                    }
+                    // Node Information composition with summary and details view
+                    nodeInfoElement.innerHTML = `
+                    <h2>&#9899; node information:</h2>
+                    <details open>
+                        <summary style="font-size: 1.2em;"><strong>${node_summaryLabel}</strong></summary>
+                        <div style="padding-left: 1em;">
+                            ${node_detailsContent}
+                        </div>
+                    </details>
+                    `;
+                    sidebarContent.appendChild(nodeInfoElement);
+    
+                    // Incoming and outgoing edges divs
+                    sidebarContent.innerHTML += '<br>';
+                    var incomingEdgesElement = document.createElement('div');
+                    var outgoingEdgesElement = document.createElement('div');
+                    incomingEdgesElement.innerHTML = '<h2><span style="color: red;">&#8594;</span> incoming edges:</h2>';
+                    outgoingEdgesElement.innerHTML = '<h2><span style="color: blue;">&#8592;</span> outgoing edges:</h2>';
+    
+                    // Get length of longest from and to properties vor padding
+                    let maxLength = 0;
+                    var edgeIds = network.getConnectedEdges(nodeId);
+                    var edges = edgeIds.map(id => data.edges.get(id));
+    
+                    edges.forEach(function (edge) {
+                        // Save maximum length of to and from properties
+                        if (edge.to.length > maxLength) {
+                            maxLength = edge.to.length;
+                        }
+                        if (edge.from.length > maxLength) {
+                            maxLength = edge.from.length;
+                        }
+                    });
+    
+    
+                    // Iterate over all edges and add them to the corresponding div
+                    edges.forEach(function (edge) {
+                        var edgeElement = document.createElement('div');
+                        let edge_summaryLabel = '';
+                        let edge_detailsContent = '';
+    
+                        Object.keys(edge).forEach(function (prop) {
+                            if (
+                                edge.hasOwnProperty(prop) &&
+                                edge[prop] !== undefined &&
+                                prop !== 'id' &&
+                                prop !== 'arrows' &&
+                                prop !== 'color' &&
+                                prop !== 'key' &&
+                                prop !== 'from' &&
+                                prop !== 'to'
+                            ) {
+                                edge_detailsContent += `<p><strong>${prop}:</strong> ${edge[prop]}</p>`;
+                            }
+                        });
+    
+                        if (edge.to === nodeInfo.id) {
+                            // Compose edge summary label and summary / details content
+                            edge_summaryLabel = `${edge.from.padEnd(maxLength)} <span style="color: red;">&#8594;</span> ${edge.to}`;
+                            edgeElement.innerHTML = `
+                        <details>
+                            <summary style="font-size: 1.2em;"><strong>${edge_summaryLabel}</strong></summary>
+                            <div style="padding-left: 1em;">
+                                ${edge_detailsContent}
+                            </div>
+                        </details>
+                        `;
+                            incomingEdgesElement.appendChild(edgeElement);
+                        } else if (edge.from === nodeInfo.id) {
+                            // Compose edge summary label and summary / details content
+                            edge_summaryLabel = `${edge.to.padEnd(maxLength)} <span style="color: #0194C2;">&#8592;</span> ${edge.from}`;
+                            edgeElement.innerHTML = `
+                        <details>
+                            <summary style="font-size: 1.2em;"><strong>${edge_summaryLabel}</strong></summary>
+                            <div style="padding-left: 1em;">
+                                ${edge_detailsContent}
+                            </div>
+                        </details>
+                        `;
+                            outgoingEdgesElement.appendChild(edgeElement);
+                        }
+                    });
+    
+                    sidebarContent.appendChild(incomingEdgesElement);
+                    sidebarContent.innerHTML += '<br>';
+                    sidebarContent.appendChild(outgoingEdgesElement);
+                    sidebarContent.innerHTML += '<br>';
+                }
+                
+                // Special Display if cluster is selected -> Display only cluster infos
+                if (selectedNodeIsPartOfCluster) {
+                    var nodeIDsInCluster = network.getNodesInCluster(params.nodes[0]);
+                    var numberOfNodesInCluster = nodeIDsInCluster.length;
+
+                     // Get the cluster node itself (not the first node inside it)
+                    var clusterNode = network.body.nodes[params.nodes[0]];
+                    var clusterNodeLabel = "Unknown Cluster"; // Default fallback
+
+                    // Get label from the cluster node's options
+                    if (clusterNode && clusterNode.options && clusterNode.options.label) {
+                        clusterNodeLabel = clusterNode.options.label.trim(); // Remove the \n characters
+                    } else {
+                        // Fallback: try to get from the first node in cluster
+                        var firstNodeInCluster = data.nodes.get(nodeIDsInCluster[0]);
+                        if (firstNodeInCluster) {
+                            if (firstNodeInCluster.groupedBy) {
+                                clusterNodeLabel = firstNodeInCluster.groupedBy;
+                            } else if (firstNodeInCluster.label) {
+                                clusterNodeLabel = firstNodeInCluster.label;
+                            } else if (firstNodeInCluster.id) {
+                                clusterNodeLabel = firstNodeInCluster.id;
+                            }
+                        }
+                        // Final fallback
+                        if (!clusterNodeLabel || clusterNodeLabel === "Unknown Cluster") {
+                            clusterNodeLabel = params.nodes[0] || "Unknown Cluster";
+                        }
+                    }
+                    // Display Infos
+                    var clusterInfoElement = document.createElement('div');
+                    let detailsContent = '';
+                    nodeIDsInCluster.forEach(function (nodeId, index) {
+                        var nodeLabel = network.body.nodes[nodeId].options.label;
+                        detailsContent += `<p><strong>Node ${index}:</strong> ${nodeLabel}</p>`;
+                    });
+                    
+                    clusterInfoElement.innerHTML = `<h2>cluster information:</h2>
+                    <table>
+                        <tr>
+                            <th style="text-align: left;">#nodes in cluster: </th>
+                            <td style="text-align: center;">${numberOfNodesInCluster}</td>
+                        </tr>
+                        <tr>
+                            <th style="text-align: left;">cluster label: </th>
+                            <td style="text-align: center;">${clusterNodeLabel}</td>
+                        </tr>
+                    </table>
+                    <br>
+                    <details>
+                        <summary style="font-size: 1.2em;"><strong>nodes in cluster</strong></summary>
+                        <div style="padding-left: 1em;">
+                            ${detailsContent} 
+                        </div>
+                    </details>
+                    <br>
+                    <strong><span style="color: #E9CE5C;">Doubleclick on cluster to open it.</span></strong>
+                    `;
+
+                    sidebarContent.appendChild(clusterInfoElement);
+                }
+            }
+        });
+
+        network.on("selectEdge", function (params) {
+            if (params.edges.length > 0 && params.nodes.length === 0) {
+                var edgeId = params.edges[0];
+                var edgeInfo = data.edges.get(edgeId);
+                
+                resetAllEdgeColors();
+
+                // Set sidebar content 
+                var sidebarContent = document.getElementById('sidebar-content');
+                sidebarContent.innerHTML = '';
+                var edgeInfoElement = document.createElement('div');
+                
+                // If there is no edge info -> Probably edge in cluster. 
+                var selectedEdgeIsPartOfCluster = false;
+                if (!edgeInfo) {
+                    selectedEdgeIsPartOfCluster = true;
+                    edgeInfoElement.innerHTML= `
+                    <h2><span style="color: #ca5cdd;"> &#8594;</span>  edge information:</h2>
+                    <p style="color: #ca5cdd; font-style: bold;">Edge from/to cluster selected:</p><p style="font-style: italic;"> no edge information available for aggregated edges from clusters.</p>
+                    `;
+                } else {
+                    let summaryLabel = '';
+                    let detailsContent = '';
+                    //Reset  Color edge in purple and add edge id to coloredEdgeIDs
+                    data.edges.update({ id: edgeId, color: "#ca5cdd"});
+                    addEdgeIdToColoredEdgeIDs(edgeId);
+                    
+                    if (edgeInfo !== undefined && edgeInfo !== null && typeof edgeInfo === 'object') {
+                        Object.keys(edgeInfo).forEach(function (prop) {
+                            if (
+                                edgeInfo.hasOwnProperty(prop) &&
+                                edgeInfo[prop] !== undefined &&
+                                prop !== 'id' &&
+                                prop !== 'arrows' &&
+                                prop !== 'color' &&
+                                prop !== 'key' &&
+                                prop !== 'from' &&
+                                prop !== 'to'
+                                ) {
+                                    detailsContent += `<p><strong>${prop}:</strong> ${edgeInfo[prop]}</p>`;
+                                }
+                        });
+                    }
+                    
+                    summaryLabel = `${edgeInfo.from} <span style="color: #ca5cdd;">&#8594;</span> ${edgeInfo.to}`;
+                    edgeInfoElement.innerHTML = `
+                    <h2><span style="color: #ca5cdd;"> &#8594;</span>  edge information:</h2>
+                    <details open>
+                        <summary style="font-size: 1.2em;"><strong>${summaryLabel}</strong></summary>
+                        <div style="padding-left: 1em;">
+                            ${detailsContent}
+                        </div>
+                    </details>
+                    `;
+                } 
+                sidebarContent.appendChild(edgeInfoElement);
+            }
+        });
+
+        // Layout button event listeners - commented out to disable functionality
+        // Function setting hierarchical layout via click listener
+        // hierarchicalWideButton.addEventListener('click', function () {
+        //     setLayout('hierarchical-wide');
+        // });
+
+        // Function setting clustered/ hierarchical-tight layout via click listener
+        // hierarchicalTightButton.addEventListener('click', function () {
+        //     setLayout('hierarchical-tight');
+        // });
+
+        // Function setting dynamic layout via click listener
+        // dynamicLayoutButton.addEventListener('click', function () {
+        //     setLayout('dynamic');
+        // });
+
+        // Function for the Reset button - resets to beginning with all clustered
+        resetButton.addEventListener('click', function () {
+            // Remember current physics state - commented out since physics functionality is disabled
+            // const currentPhysicsState = graphState.physicsEnabled;
+            
+            // Reset the view to have all groups clustered
+            // First, ensure we're not in "all clusters open" mode by updating the state
+            updateState(currentState => {
+                currentState.allClustersOpen = false;
+                // Preserve physics state - commented out
+                // currentState.physicsEnabled = currentPhysicsState;
+                return currentState;
+            });
+            
+            openAllClusters(); // First open any existing clusters
+            setTimeout(function() {
+                clusterIDs = clusterAllGroups(Groups); // Then cluster all groups
+                show_defaultSidebarContent();
+                
+                // Restore physics state after clustering - commented out
+                // enablePhysics(currentPhysicsState);
+            }, 200);
+        });
+
+        // Function for the Open All button - unclusters everything
+        openAllButton.addEventListener('click', function () {
+            // Remember current physics state - commented out since physics functionality is disabled
+            // const currentPhysicsState = graphState.physicsEnabled;
+            
+            // Reset any ongoing operations - commented out
+            // enablePhysics(false);
+            
+            // First check if there are clusters to open
+            let hasVisibleClusters = false;
+            for (var nodeId in network.body.nodes) {
+                if (network.body.nodes[nodeId] && network.isCluster(nodeId)) {
+                    hasVisibleClusters = true;
+                    break;
+                }
+            }
+            
+            if (hasVisibleClusters) {
+                // If there are clusters, open them all
+                openAllClusters();
+                
+                // Restore physics state after opening all clusters - commented out
+                // setTimeout(() => {
+                //     enablePhysics(currentPhysicsState);
+                // }, 300);
+            } else {
+                // If there are no visible clusters but we might be in a deep state, reset
+                graphState.openedClusters = {};
+                // graphState.physicsEnabled = currentPhysicsState; // Preserve physics state - commented out
+                saveState();
+                setLayout('hierarchical-wide');
+                
+                // Restore physics state - commented out
+                // setTimeout(() => {
+                //     enablePhysics(currentPhysicsState);
+                // }, 300);
+            }
+            
+            show_defaultSidebarContent();
+        });
+
+        // Add Event listener for fit button 
+        fitScreenButton.addEventListener('click', function () {
+            network.fit();
+        });
+        
+        /// Physics Stuff - commented out to disable functionality
+        // function enablePhysics(enable) {
+        //     console.log("Request to set physics state to:", enable);
+        //     
+        //     // ALWAYS force physics to be disabled when the button is disabled
+        //     if (graphState.physicsButtonDisabled) {
+        //         enable = false;
+        //         console.log("Physics button disabled - forcing physics to remain disabled");
+        //     }
+        //     
+        //     if (enable) {
+        //         // Set the options with Physics
+        //         network.setOptions(currentOptionsWithPhysics);
+        //         dynamicPhysicsEnabled = true;
+        //         // Update global state
+        //         graphState.physicsEnabled = true;
+        //         console.log('Physics enabled');
+        //     } else {
+        //         // This block will always execute when physicsButtonDisabled is true
+        //         network.setOptions({
+        //             physics: false,
+        //             edges: {
+        //                 "smooth": false
+        //             }
+        //         });
+        //         dynamicPhysicsEnabled = false;
+        //         // Update global state
+        //         graphState.physicsEnabled = false;
+        //         console.log('Physics disabled');
+        //     }
+        //     
+        //     // Always update the button display
+        //     updatePhysicsOnOffButtonDisplay();
+        //     
+        //     // Save state when physics changes
+        //     saveState();
+        // }    
+        
+        // function updatePhysicsOnOffButtonDisplay() {
+        //     // Always use the graphState as source of truth for physics state
+        //     const physicsEnabled = graphState.physicsEnabled;
+        //     const buttonDisabled = graphState.physicsButtonDisabled;
+        //     
+        //     console.log("Updating physics button display, physics enabled:", physicsEnabled, "button disabled:", buttonDisabled);
+        //     
+        //     // Make sure dynamicPhysicsEnabled matches the state
+        //     if (dynamicPhysicsEnabled !== physicsEnabled) {
+        //         console.log("Synchronizing dynamicPhysicsEnabled to match graphState");
+        //         dynamicPhysicsEnabled = physicsEnabled;
+        //     }
+        //     
+        //     // Apply disabled styling if the button is disabled
+        //     if (buttonDisabled) {
+        //         physicsOnOffButton.innerHTML = "Physics: OFF (Locked)";
+        //         physicsOnOffButton.classList.remove('active-main-buttons');
+        //         physicsOnOffButton.classList.add('main-buttons');
+        //         physicsOnOffButton.style.opacity = "0.6"; // Make button appear grayed out
+        //         physicsOnOffButton.style.cursor = "not-allowed"; // Change cursor to indicate it's not clickable
+        //         physicsOnOffButton.title = "Physics is locked off for this session"; 
+        //     } else {
+        //         // Regular button display logic (if we ever re-enable the button)
+        //         if (physicsEnabled) {
+        //             physicsOnOffButton.innerHTML = "Physics: ON";
+        //             physicsOnOffButton.classList.add('active-main-buttons');
+        //             physicsOnOffButton.classList.remove('main-buttons');
+        //             physicsOnOffButton.title = "Disable Physics"; 
+        //         } else {
+        //             physicsOnOffButton.innerHTML = "Physics: OFF";
+        //             physicsOnOffButton.classList.remove('active-main-buttons');
+        //             physicsOnOffButton.classList.add('main-buttons');
+        //             physicsOnOffButton.title = "Enable Physics"; 
+        //         }
+        //         physicsOnOffButton.style.opacity = "1"; // Full opacity
+        //         physicsOnOffButton.style.cursor = "pointer"; // Regular cursor
+        //     }
+        // }
+
+        // Add Event listener for physics button - commented out
+        // physicsOnOffButton.addEventListener('click', function () {
+        //     // Don't change physics if button is disabled
+        //     if (graphState.physicsButtonDisabled) {
+        //         console.log("Physics button is disabled - ignoring click");
+        //         return; // Exit early
+        //     }
+        //     
+        //     // Only toggle physics if button is enabled
+        //     const newPhysicsState = !graphState.physicsEnabled;
+        //     console.log("Physics button clicked, changing state to:", newPhysicsState);
+        //     
+        //     // Update physics
+        //     enablePhysics(newPhysicsState);
+        //     
+        //     // Fit to view
+        //     setTimeout(() => {
+        //         network.fit();
+        //     }, 100);
+        // });
+
+        // Create function to quickly set different layouts 
+        var currentLayout = "hierarchical-wide";
+        function setLayout(layoutType) {
+            var newOptions = {};
+            switch(layoutType) {
+                case "dynamic":
+                    // Compose options for small Graphs dynamic physics layout
+                    var smallGraphsDynamicOptions = {
+                        layout: {
+                            improvedLayout: true,
+                            hierarchical: {
+                                enabled: false
+                            }
+                        },
+                        edges: {
+                            "smooth": {
+                                "enabled": true,
+                                "type": "cubicBezier",
+                                "roundness": 0.0
+                            }
+                        },
+                        physics: {
+                            forceAtlas2Based: {
+                                gravitationalConstant: -50,
+                                centralGravity: 0.01,
+                                theta: 0.8,
+                                springLength: 100,
+                                springConstant: 0.08,
+                                damping: 1.0,
+                                avoidOverlap: 1.0
+                            },
+                            minVelocity: 0.75,
+                            solver: 'forceAtlas2Based'
+                        }
+                    };
+                    // Compose options for small Graphs dynamic physics layout
+                    var largeGraphsDynamicOptions = {
+                        layout: {
+                            improvedLayout: true,
+                            hierarchical: {
+                                enabled: false
+                            }
+                        },
+                        edges: {
+                            "smooth": {
+                                "enabled": true,
+                                "type": "cubicBezier",
+                                "roundness": 0.0
+                            }
+                        },
+                        physics: {
+                            forceAtlas2Based: {
+                                gravitationalConstant: -100,
+                                centralGravity: 0.05,
+                                theta: 0.9,
+                                springLength: 100,
+                                springConstant: 0.15,
+                                damping: 0.95,
+                                avoidOverlap: 0.8
+                            },
+                            minVelocity: 0.75,
+                            solver: 'forceAtlas2Based'
+                        }
+                    };
+                    // If numEdges > 300 set fastSmoothEdgesOptions
+                    if (data.edges.length > 300) {
+                        newOptions = largeGraphsDynamicOptions;
+                    } else {
+                        newOptions = smallGraphsDynamicOptions;
+                    }
+                    enableContinuousNetworkFit(2000, true);
+                    break;
+                case "hierarchical-wide":
+                    newOptions = {
+                        layout: {
+                            improvedLayout: true,
+                            hierarchical: {
+                                enabled: true,
+                                direction: "UD",
+                                sortMethod: "directed",
+                                levelSeparation: 200,
+                                nodeSpacing: 50,
+                                treeSpacing: 120,
+                                blockShifting: true,
+                                edgeMinimization: true,
+                                parentCentralization: false,
+                                shakeTowards: "roots"
+                            }
+                        },
+                        physics: {
+                            hierarchicalRepulsion: {
+                                avoidOverlap: 1.0,
+                            }
+                        }
+                    };
+                    enableContinuousNetworkFit(750);
+                    break;
+                    case "hierarchical-tight":
+                        newOptions = {
+                            layout: {
+                                improvedLayout: true,
+                                hierarchical: {
+                                    enabled: true,
+                                    direction: "UD",
+                                    sortMethod: "directed",
+                                    levelSeparation: 200,
+                                    nodeSpacing: 5,
+                                    treeSpacing: 120,
+                                    blockShifting: true,
+                                    edgeMinimization: true,
+                                    parentCentralization: false,
+                                    shakeTowards: "roots"
+                                }
+                            },
+                            physics: {
+                                hierarchicalRepulsion: {
+                                    avoidOverlap: 1.0,
+                                }
+                            }
+                    };
+                    enableContinuousNetworkFit(750);
+                    break;
+                case "fast":
+                    newOptions = {
+                        physics: false,
+                        layout: {
+                            improvedLayout: false,
+                            hierarchical: {
+                                enabled: false
+                            }
+                        }
+                    };
+                    break;
+                default:
+                    console.log('Invalid layout type');
+            }
+            // Set new options
+            network.setOptions(newOptions);
+            currentLayout = layoutType;
+            console.log('Layout set to:', currentLayout);
+            // Adapt dropdown texts to indicate current layout selection. Init plain and then make button fat based on current selection
+            // dynamicLayoutButton.innerHTML = "dynamic";
+            // hierarchicalWideButton.innerHTML = "hierarchical-wide";
+            // hierarchicalTightButton.innerHTML = "hierarchical-tight";
+            // if (currentLayout === "dynamic") {
+            //     dynamicLayoutButton.innerHTML = "<strong>dynamic</strong>";
+            // } else if (currentLayout === "hierarchical-wide") {
+            //     hierarchicalWideButton.innerHTML = "<strong>hierarchical-wide</strong>";
+            // } else if (currentLayout === "hierarchical-tight") {
+            //     hierarchicalTightButton.innerHTML = "<strong>hierarchical-tight</strong>";
+            // }
+            // Disable Physics of dynamicPhysiscs disabled; Before store current Configs for later restoring, if physics gets enabled again.
+            // Save the layout settings to currentOptionsWithPhysics but preserve physics setting
+            var isPhysicsEnabled = graphState.physicsButtonDisabled ? false : graphState.physicsEnabled;
+            Object.assign(currentOptionsWithPhysics, newOptions);
+            currentOptionsWithPhysics.physics = isPhysicsEnabled;
+            
+            // Always force physics off when button is disabled
+            if (graphState.physicsButtonDisabled) {
+                dynamicPhysicsEnabled = false;
+                network.setOptions({...newOptions, physics: false});
+            } else {
+                // Only respect physics state if button is not disabled
+                if (isPhysicsEnabled) {
+                    dynamicPhysicsEnabled = true;
+                    network.setOptions({...newOptions, physics: true});
+                } else {
+                    dynamicPhysicsEnabled = false;
+                    network.setOptions({...newOptions, physics: false});
+                }
+            }
+            // updatePhysicsOnOffButtonDisplay(); 
+        }
+
+        // Create function for continuous network fitting
+        function enableContinuousNetworkFit(timeSpanMS=750, centralize=false) {
+            var currentTime = new Date().getTime();
+            stopContinuousNetworkFit = currentTime + timeSpanMS;
+            network.fit();
+            if (centralize) {
+                currentCenter = network.getViewPosition();
+                keepCenter = true;
+            }
+        }
+
+
+        // Continuous network fitting
+        network.on('afterDrawing', function() {
+            var currentTime = new Date().getTime(); 
+            // Fit until currentTime > stopContinuousNetworkFit
+            if (currentTime < stopContinuousNetworkFit) {
+                network.fit();
+                // If keepCenter was set by enableContinuousNetworkFit, then maintain centering
+                if (keepCenter) {
+                    var newScale = network.getScale();
+                    network.moveTo({
+                        scale: newScale,
+                        position: currentCenter});
+                }
+            } else {
+                keepCenter = false;
+            }
+        });
+
+        function clusterAllGroups(groups_list) {
+            console.log("=== CLUSTERING DEBUG START ===");
+            var clusterIDs = [];
+            
+            // Clear any cached color assignments to ensure only current palette colors are used
+            console.log("Clearing cached color assignments from localStorage");
+            localStorage.removeItem('clusterColorAssignments');
+            Object.keys(groupColorCache).forEach(key => delete groupColorCache[key]);
+            
+            // Clear sibling position cache
+            localStorage.removeItem('siblingPositionCache');
+            Object.keys(siblingPositionCache).forEach(key => delete siblingPositionCache[key]);
+            
+            // Also clear color family assignments to ensure fresh assignment
+            if (window._colorFamilyAssignments) {
+                window._colorFamilyAssignments = {};
+            }
+            
+            openAllClusters(); // Clear any existing clusters
+            
+            // Clear the "all clusters open" flag since we're explicitly clustering now
+            updateState(currentState => {
+                currentState.allClustersOpen = false;
+                // Preserve physics state
+                const prevPhysicsState = currentState.physicsEnabled;
+                return { ...currentState, physicsEnabled: prevPhysicsState };
+            });
+            
+            console.log("Starting hierarchical clustering...");
+            console.log("Groups to process:", groups_list);
+            console.log("GroupHierarchy:", GroupHierarchy);
+            
+            // Check if network is ready
+            console.log("Network object exists:", !!network);
+            console.log("Network body exists:", !!network.body);
+            console.log("Network body nodes count:", Object.keys(network.body.nodes).length);
+            
+            // Find all nodes and their group assignments
+            var allNodes = data.nodes.get();
+            var nodesByGroup = {};
+            
+            console.log("Total nodes found:", allNodes.length);
+            
+            allNodes.forEach(function(node) {
+                if (node.groupedBy) {
+                    if (!nodesByGroup[node.groupedBy]) {
+                        nodesByGroup[node.groupedBy] = [];
+                    }
+                    nodesByGroup[node.groupedBy].push(node.id);
+                } else {
+                    console.log("Node without groupedBy:", node.id);
+                }
+            });
+            
+            console.log("Nodes by group:", nodesByGroup);
+            console.log("Total groups with nodes:", Object.keys(nodesByGroup).length);
+            
+            // Build complete hierarchy including all ancestor groups
+            var hierarchyMap = {};
+            var allGroups = Object.keys(nodesByGroup);
+            
+            // First, add all groups that have nodes
+            allGroups.forEach(function(group) {
+                hierarchyMap[group] = {
+                    path: [],
+                    depth: 0,
+                    parent: GroupHierarchy[group] ? GroupHierarchy[group].parent : null,
+                    children: [],
+                    allDescendantNodes: [],
+                    directNodes: nodesByGroup[group] || []
+                };
+            });
+            
+            // Then, add any parent groups that don't have direct nodes but exist in GroupHierarchy
+            Object.keys(GroupHierarchy).forEach(function(group) {
+                if (!hierarchyMap[group]) {
+                    hierarchyMap[group] = {
+                        path: [],
+                        depth: 0,
+                        parent: GroupHierarchy[group] ? GroupHierarchy[group].parent : null,
+                        children: [],
+                        allDescendantNodes: [],
+                        directNodes: []
+                    };
+                    console.log("Adding parent group without direct nodes:", group);
+                }
+            });
+            
+            // Store hierarchy for ghost cluster functions
+            window._clusterHierarchy = hierarchyMap;
+            
+            // Now build the paths and calculate depth for all groups
+            Object.keys(hierarchyMap).forEach(function(group) {
+                var current = group;
+                var path = [current];
+                
+                while (hierarchyMap[current] && hierarchyMap[current].parent) {
+                    var parent = hierarchyMap[current].parent;
+                    path.unshift(parent);
+                    current = parent;
+                }
+                
+                // Store the complete path for this group
+                hierarchyMap[group].path = path;
+                hierarchyMap[group].depth = path.length - 1;
+            });
+            
+            // Build parent-child relationships
+            Object.keys(hierarchyMap).forEach(function(group) {
+                var parent = hierarchyMap[group].parent;
+                if (parent && hierarchyMap[parent]) {
+                    hierarchyMap[parent].children.push(group);
+                }
+            });
+            
+            // Calculate all descendant nodes for each group (including from subgroups)
+            function calculateDescendantNodes(groupName) {
+                if (hierarchyMap[groupName].allDescendantNodes.length > 0) {
+                    return hierarchyMap[groupName].allDescendantNodes;
+                }
+                
+                var descendants = [];
+                
+                // Add direct nodes
+                if (nodesByGroup[groupName]) {
+                    descendants = descendants.concat(nodesByGroup[groupName]);
+                }
+                
+                // Add nodes from child groups
+                hierarchyMap[groupName].children.forEach(function(childGroup) {
+                    descendants = descendants.concat(calculateDescendantNodes(childGroup));
+                });
+                
+                hierarchyMap[groupName].allDescendantNodes = descendants;
+                return descendants;
+            }
+            
+            // Calculate descendant nodes for all groups
+            Object.keys(hierarchyMap).forEach(function(group) {
+                calculateDescendantNodes(group);
+            });
+            
+            console.log("Complete hierarchy map:", hierarchyMap);
+            
+            // After hierarchy is fully constructed, assign colors to all nodes based on their parent groups
+            // This ensures nodes have their parent's color regardless of when they're revealed
+            
+            // First, pre-assign all cluster colors to ensure consistent hierarchy
+            preAssignAllClusterColors();
+            
+            // Then assign node colors based on their parent groups
+            assignNodeColorsBasedOnParentGroups();
+            
+            // Find the root groups (groups with no parent)
+            var rootGroups = Object.keys(hierarchyMap).filter(function(group) {
+                return !hierarchyMap[group].parent;
+            });
+            
+            console.log("Root groups:", rootGroups);
+            
+            if (rootGroups.length === 0) {
+                console.log("No root groups found!");
+                return clusterIDs;
+            }
+            
+            console.log("=== STARTING ROOT GROUP CLUSTERING ===");
+            
+            // Create clusters for root groups first (these will contain ALL descendant nodes)
+            rootGroups.forEach(function(rootGroup) {
+                console.log("--- Processing root group:", rootGroup, "---");
+                
+                var allDescendantNodes = hierarchyMap[rootGroup].allDescendantNodes;
+                
+                if (allDescendantNodes.length === 0) {
+                    console.log("No descendant nodes for root group:", rootGroup);
+                    return;
+                }
+                
+                var clusterId = "cluster_" + rootGroup;
+                
+                // Get a consistent color for this cluster
+                const clusterColor = getClusterColor(rootGroup);
+                
+                var clusterProps = {
+                    id: clusterId,
+                    label: rootGroup,
+                    shape: 'ellipse',
+                    size: 35, // Slightly larger than regular nodes
+                    color: {
+                        background: clusterColor,
+                        border: '#2B2B2B'
+                    },
+                    font: {color: getTextColorForBackground(clusterColor), size: 14},
+                    borderWidth: 2,
+                    margin: 1, // Add some margin to prevent content from touching the border
+                    widthConstraint: 65, // Smaller than before
+                    heightConstraint: 40  // Smaller than before
+                };
+                
+                console.log("Cluster ID:", clusterId);
+                console.log("Cluster properties:", clusterProps);
+                console.log("All descendant nodes for", rootGroup + ":", allDescendantNodes);
+                console.log("Number of nodes to cluster:", allDescendantNodes.length);
+                
+                try {
+                    // We don't need to recolor the nodes here since they already have their direct parent's color
+                    // from the assignNodeColorsBasedOnParentGroups function
+                    console.log("About to call network.cluster for", rootGroup);
+                    network.cluster({
+                        joinCondition: function(nodeOptions) {
+                            var shouldJoin = allDescendantNodes.indexOf(nodeOptions.id) !== -1;
+                            if (shouldJoin) {
+                                console.log("  -> Joining node", nodeOptions.id, "to cluster", clusterId);
+                            }
+                            return shouldJoin;
+                        },
+                        clusterNodeProperties: clusterProps
+                    });
+                    
+                    console.log("SUCCESS: Created cluster", clusterId, "with", allDescendantNodes.length, "nodes");
+                    
+                    // Verify the cluster was created
+                    if (network.isCluster(clusterId)) {
+                        var nodesInCluster = network.getNodesInCluster(clusterId);
+                        console.log("Nodes in cluster:", nodesInCluster);
+                        clusterIDs.push(clusterId);
+                        console.log("✓ VERIFIED: Cluster", clusterId, "exists and is active");
+                    } else {
+                        console.log("✗ ERROR: Cluster", clusterId, "was not created successfully");
+                    }
+                    
+                } catch (error) {
+                    console.log("ERROR creating cluster for", rootGroup + ":", error);
+                }
+                
+                console.log("--- Finished processing root group:", rootGroup, "---");
+            });
+            
+            console.log("=== FINISHED ROOT GROUP CLUSTERING ===");
+            console.log("Total cluster IDs created:", clusterIDs);
+            
+            console.log("=== FINAL CLUSTERING STEPS ===");
+            console.log("Finishing clustering, setting allGroupsClustered = true");
+            allGroupsClustered = true;
+            
+            // Update the button styling - removed to prevent sticky white borders
+            // resetButton.classList.add('active-main-buttons');
+            // resetButton.classList.remove('main-buttons');
+            // openAllButton.classList.remove('active-main-buttons');
+            // openAllButton.classList.add('main-buttons');
+            
+            console.log("About to set layout to hierarchical-tight");
+            setLayout('hierarchical-tight');
+            console.log("About to fit network");
+            network.fit();
+            console.log("Clustering complete!");
+            
+            console.log("=== FINAL VERIFICATION ===");
+            console.log("Total nodes in network:", Object.keys(network.body.nodes).length);
+            
+            // Final verification of clusters
+            clusterIDs.forEach(function(clusterId) {
+                if (network.isCluster(clusterId)) {
+                    console.log("Active cluster found:", clusterId);
+                } else {
+                    console.log("Cluster not active:", clusterId);
+                }
+            });
+            
+            console.log("Total active clusters:", clusterIDs.length);
+            console.log("allGroupsClustered:", allGroupsClustered);
+            console.log("=== CLUSTERING DEBUG END ===");
+            
+            return clusterIDs;
+        }
+
+        // Function to cluster a specific group by name
+        function clusterByGroup(groupName) {
+            console.log("=== CLUSTERING GROUP:", groupName, "===");
+            
+            if (!window._clusterHierarchy || !window._clusterHierarchy[groupName]) {
+                console.log("Group not found in hierarchy:", groupName);
+                return;
+            }
+            
+            var groupInfo = window._clusterHierarchy[groupName];
+            var allDescendantNodes = groupInfo.allDescendantNodes;
+            
+            if (!allDescendantNodes || allDescendantNodes.length === 0) {
+                console.log("No descendant nodes for group:", groupName);
+                return;
+            }
+            
+            var clusterId = "cluster_" + groupName;
+            // Get a consistent color for this cluster
+            const clusterColor = getClusterColor(groupName);
+            var clusterProps = {
+                id: clusterId,
+                label: groupName,
+                shape: 'ellipse',
+                size: 35, // Match other clusters
+                color: {
+                    background: clusterColor,
+                    border: '#2B2B2B'
+                },
+                font: {color: getTextColorForBackground(clusterColor), size: 14},
+                borderWidth: 2,
+                margin: 1,
+                widthConstraint: 65,
+                heightConstraint: 40
+            };
+            
+            console.log("Creating cluster with ID:", clusterId);
+            console.log("Nodes to cluster:", allDescendantNodes);
+            
+            try {
+                network.cluster({
+                    joinCondition: function(nodeOptions) {
+                        return allDescendantNodes.indexOf(nodeOptions.id) !== -1;
+                    },
+                    clusterNodeProperties: clusterProps
+                });
+                console.log("Successfully created cluster:", clusterId);
+            } catch (error) {
+                console.error("Error creating cluster:", error);
+            }
+        }
+
+        // Function no longer needed - kept as empty for compatibility
+        function moveHierarchyEdgesToGhost(originalClusterId, ghostNodeId) {
+            console.log("=== MOVING HIERARCHY EDGES SKIPPED (GHOST CLUSTERS DISABLED) ===");
+            // This function is no longer needed since we removed ghost clusters
+        }
+
+        // Function no longer needed - kept as empty for compatibility
+        function recreateAllHierarchyEdges() {
+            console.log("=== RECREATING HIERARCHY EDGES SKIPPED (GHOST CLUSTERS DISABLED) ===");
+            // This function is no longer needed since we removed ghost clusters
+        }
+
+    }; // End of window.onload function
+            // End content of script.js
+        </script>
+    </body>
+</html>

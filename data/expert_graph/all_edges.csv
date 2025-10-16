@@ -1,0 +1,114 @@
+source_id,target_id,source_label,target_label,edge_name,comment
+1,52,CLF_A_700307,M_WarnWithStacklight,CLF_A_700307_to_WarnWithStacklight,Clogged coolant filter triggers a warning with stacklight.
+2,1,CLF_Filter_Ok,CLF_A_700307,CLF_Filter_Monitoring,When Filter_OK=False for at least 5 seconds -> Alarm 700307 is triggered
+4,3,F_Filter_Ok,F_A_700313,Fleece_Filter_Monitoring,When Fleece_Filter_Ok=False for at least 5 seconds --> Alarm 700313 is triggered
+5,48,HP_A_700304,M_ErrorActive,HP_A_700304_to_ErrorActive,High pressure pump motor protection alarm triggers an error state.
+7,5,HP_Pump_Ok,HP_A_700304,HP_Pump_Monitoring,When HP_Pump_Ok=False -> Alarm 700304 is triggered
+7,6,HP_Pump_Ok,HP_Pump_isOff,HP_Pump_not_ok_to_off,"When HP_Pump_Ok=False, then HP_Pump_isOff=True, i.e. the pump is turned off to prevent damage."
+9,8,LT_Level_Ok,LT_A_700317,LT_Level_Monitoring,When LT_Level_Ok=False -> Alarm 700317 is triggered
+9,10,LT_Level_Ok,LT_Pump_Ok,LT_Level_Pump_Ok,"When LT_Level_Ok=False -> LT_Pump_Ok=False, i.e. the pump is turned off to prevent overflow."
+11,48,LP_A_700301,M_ErrorActive,LP_A_700301_to_ErrorActive,Low pressure pump motor protection alarm triggers an error state.
+12,11,LP_Pump_Ok,LP_A_700301,LP_Pump_Monitoring,When LP_Pump_Ok=False -> Alarm 700301 is triggered
+12,13,LP_Pump_Ok,LP_Pump_On,LP_Pump_On_Condition,"Only if LP_Pump_Ok=True, then LP_Pump_On can be True."
+13,6,LP_Pump_On,HP_Pump_isOff,LP_Pump_On_HP_Pump_Off,"When LP Pump is commanded to be on, then HP Pump is turned off."
+14,48,CLT_A_700310,M_ErrorActive,CLT_A_700310_to_ErrorActive,Coolant tank level minimum alarm triggers an error state.
+15,14,CLT_Level_lt_Min,CLT_A_700310,CLT_Level_Min_Monitoring,When Level_lt_Min=True -> Alarm 700310 is triggered
+17,16,ExU_On,ExU_isOff,ExU_On_ExU_isOff,"When ExtractionUnit is commanded to be on (ExU_On=True), it results in the ExtractionUnit being on (ExU_isOff=False)."
+18,21,Hyd_A_700202,Hyd_Valve_P_Up,Hyd_A_700202_Disables_Hyd_Valve_P_Up,"When hydraulic pressure out of norm alarm 700202 is triggered (Hyd_A_700202=True), the pressure accumulation valve is closed in fear of leakage (Hyd_Valve_P_Up=False)."
+18,30,Hyd_A_700202,Hyd_Pump_On,Hyd_A_700202_Disables_Hyd_Pump_On,"When pressure out of norm alarm 700202 is triggered (Hyd_A_700202=True), the hydraulic pump is turned off (Hyd_Pump_On=False)."
+18,48,Hyd_A_700202,M_ErrorActive,Hyd_A_700202_to_ErrorActive,Hydraulic pressure out of norm alarm triggers an error state.
+20,18,Hyd_Pressure,Hyd_A_700202,Hyd_Pressure_Monitoring,When hydraulic pressure is out of normal range for at least 5 seconds -> Alarm 700202 is triggered
+20,21,Hyd_Pressure,Hyd_Valve_P_Up,Hyd_Pressure_Control,"When hydraulic pressure falls below threshold, valve is commanded to open (Hyd_Valve_P_Up=True)"
+22,19,Hyd_A_700207,Hyd_IsEnabled,Hyd_A_700207_Disables_Hyd_IsEnabled,"When hydraulic filter is clogged alarm 700207 is triggered (Hyd_A_700207=True), hydraulics is disabled (Hyd_IsEnabled=False)."
+22,48,Hyd_A_700207,M_ErrorActive,Hyd_A_700207_to_ErrorActive,Clogged hydraulic filter alarm triggers an error state.
+23,22,Hyd_Filter_Ok,Hyd_A_700207,Hyd_Filter_Monitoring,When Hyd_Filter_Ok=False for at least 5 seconds -> Alarm 700207 is triggered
+23,29,Hyd_Filter_Ok,Hyd_Pump_Ok,Hyd_Filter_Clogged_Pump_Failure,"When Hyd_Filter_Ok=False for some time, the probability of Hyd_Pump_OK=False rises (pump might fail)"
+24,51,Hyd_A_700205,M_WarnActive,Hyd_A_700205_to_WarnActive,Hydraulic oil level near minimum warning triggers a general warning state.
+25,30,Hyd_A_700206,Hyd_Pump_On,Hyd_A_700206_Disables_Hyd_Pump_On,"When hydraulic level is below minimum alarm 700206 is triggered (Hyd_A_700206=True), the hydraulic pump is turned off (Hyd_Pump_On=False)."
+25,48,Hyd_A_700206,M_ErrorActive,Hyd_A_700206_to_ErrorActive,Hydraulic oil level below minimum alarm triggers an error state.
+26,24,Hyd_Level_Ok,Hyd_A_700205,Hyd_Level_Warning_Monitoring,When Hyd_Level_Ok=False -> Warning 700205 is immediately triggered
+26,25,Hyd_Level_Ok,Hyd_A_700206,Hyd_Level_Alarm_Monitoring,When Hyd_Level_Ok=False for at least 800ms  -> Alarm 700206 is triggered
+26,29,Hyd_Level_Ok,Hyd_Pump_Ok,Hyd_Level_Low_Pump_Failure,"When Hyd_Level_Ok=False for some time, the probability of Hyd_Pump_OK=False rises (pump might fail)"
+27,48,Hyd_A_700208,M_ErrorActive,Hyd_A_700208_to_ErrorActive,Hydraulic pump motor protection alarm triggers an error state.
+29,27,Hyd_Pump_Ok,Hyd_A_700208,Hyd_Pump_Monitoring,When Hyd_Pump_Ok=False -> Motor protection switch is triggered indicated by alarm 700208=True
+29,30,Hyd_Pump_Ok,Hyd_Pump_On,Hyd_Pump_Ok_Condition,"If Hyd_Pump_Ok=False, then Hyd_Pump_On is turned off (Hyd_Pump_On=False) to prevent damage."
+30,28,Hyd_Pump_On,Hyd_Pump_isOff,Hyd_Pump_On_Status,"When hydraulic pump is commanded to be on (Hyd_Pump_On=True), it results in the pump being on (Hyd_Pump_isOff=False)"
+31,51,Hyd_A_700203,M_WarnActive,Hyd_A_700203_to_WarnActive,High hydraulic temperature warning triggers a general warning state.
+32,19,Hyd_A_700204,Hyd_IsEnabled,Hyd_A_700204_Disables_Hyd_IsEnabled,"When hydraulic temperature is above 80 degree C alarm 700204 is triggered (Hyd_A_700204=True), hydraulics is disabled (Hyd_IsEnabled=False)."
+32,48,Hyd_A_700204,M_ErrorActive,Hyd_A_700204_to_ErrorActive,Critical hydraulic temperature alarm triggers an error state.
+33,31,Hyd_Temp_lt_70,Hyd_A_700203,Hyd_Temp_Warning_Monitoring,When Hyd_Temp_lt_70=False (temp >= 70°C) -> Warning 700203 is triggered
+33,34,Hyd_Temp_lt_70,Hyd_Temp_lt_80,Hyd_Temp_70_to_80,Temperature above 70 degree is reached before 80 degree (common unobserved confounder)
+34,32,Hyd_Temp_lt_80,Hyd_A_700204,Hyd_Temp_Alarm_Monitoring,When Hyd_Temp_lt_80=False (temp >= 80°C) -> Alarm 700204 is triggered
+35,36,Lubr_On,Lubr_P_Ok,Lubr_On_Lubr_P_Ok,"When lubrication is commanded On (Lubr_On=True), pressure builds up until sufficient (Lubr_P_Ok=True).
+                                When LubrOn=False, Lubr_P_Ok also changes to False."
+38,52,MPA_A_701124,M_WarnWithStacklight,MPA_A_701124_to_WarnWithStacklight,Measuring probe end position not reached alarm triggers a warning with stacklight.
+39,52,MPA_A_701125,M_WarnWithStacklight,MPA_A_701125_to_WarnWithStacklight,Measuring probe both end position sensors active alarm triggers a warning with stacklight.
+40,38,MPA_InitPos,MPA_A_701124,MPA_InitPos_Monitoring,"When axis is not reaching initial pos in time (MPA_InitPos=False), besides being commanded to (MPA_toInitPos=True),
+                        end position not reached alarm 701124 is triggered."
+40,39,MPA_InitPos,MPA_A_701125,MPA_InitPos_BothEndPosSensors,"When both end position sensors are triggered (MPA_WorkPos=True AND MPA_InitPos=True),
+                        alarm 701125 is triggered."
+40,44,MPA_InitPos,MPC_close,MPA_InitPos_MPC_close,"When axis is in initial position (MPA_InitPos=True), cover can be commanded to close (MPC_close=True)"
+41,38,MPA_toInitPos,MPA_A_701124,MPA_toInitPos_Monitoring,"When axis is commanded to initial position (MPA_toInitPos=True) but does not reach it in time (MPA_InitPos=False),
+                        end position not reached alarm 701124 is triggered."
+41,40,MPA_toInitPos,MPA_InitPos,MPA_toInitPos_MPA_InitPos,"When axis is commanded to initial position (MPA_toInitPos=True), it moves to initial position (MPA_InitPos=True)"
+41,42,MPA_toInitPos,MPA_toWorkPos,MPA_toInitPos_MPA_toWorkPos,"When axis is not commanded to initial position (MPA_toInitPos=False),
+                                it can be commanded to working position (MPA_toWorkPos=True)"
+42,38,MPA_toWorkPos,MPA_A_701124,MPA_toWorkPos_Monitoring,"When axis is commanded to working position (MPA_toWorkPos=True) but does not reach it in time (MPA_WorkPos=False),
+                        end position not reached alarm 701124 is triggered."
+42,43,MPA_toWorkPos,MPA_WorkPos,MPA_toWorkPos_MPA_WorkPos,"When axis is commanded to working position (MPA_toWorkPos=True), it moves to working position (MPA_WorkPos=True)"
+43,37,MPA_WorkPos,MP_Inactive,MPA_WorkPos_MP_Inactive,"When axis is in working position (MPA_WorkPos=True), measuring probe can be activated (MP_Inactive=False)"
+43,38,MPA_WorkPos,MPA_A_701124,MPA_WorkPos_Monitoring,"When axis is not reaching work pos in time (MPA_WorkPos=False), besides being commanded to (MPA_toWorkPos=True),
+                        end position not reached alarm 701124 is triggered."
+43,39,MPA_WorkPos,MPA_A_701125,MPA_WorkPos_BothEndPosSensors,"When both end position sensors are triggered (MPA_WorkPos=True AND MPA_InitPos=True),
+                        alarm 701125 is triggered."
+44,45,MPC_close,MPC_Closed,MPC_close_MPC_Closed,"When cover is commanded to close (MPC_close=True), cover closes (MPC_Closed=True)"
+44,47,MPC_close,MPC_open,MPC_close_MPC_open,"When cover is not commanded to close (MPC_close=False),
+                                it can be commanded to open (MPC_open=True)"
+46,42,MPC_isOpen,MPA_toWorkPos,MPC_isOpen_MPA_toWorkPos,"When cover is open (MPC_isOpen=True), axis can be commanded to working position (MPA_toWorkPos=True)"
+47,46,MPC_open,MPC_isOpen,MPC_open_MPC_isOpen,"When cover is commanded to open (MPC_open=True), cover opens (MPC_isOpen=True)"
+48,52,M_ErrorActive,M_WarnWithStacklight,ErrorActive_to_WarnWithStacklight,"When an error is active, a warning with stacklight is also triggered."
+51,55,M_WarnActive,SL_Yellow,WarnActive_to_SL_Yellow,"A general warning can affect the yellow light state (e.g., blinking)."
+52,53,M_WarnWithStacklight,SL_Green,WarnWithStacklight_to_SL_Green,"A warning with stacklight can affect the green light state (e.g., blinking)."
+52,54,M_WarnWithStacklight,SL_Red,WarnWithStacklight_to_SL_Red,"A warning with stacklight can affect the red light state (e.g., blinking)."
+52,55,M_WarnWithStacklight,SL_Yellow,WarnWithStacklight_to_SL_Yellow,"A warning with stacklight can affect the yellow light state (e.g., blinking)."
+57,58,SR_loosen,SR_tighten,SR_loosen_SR_tighten,"When steady rest is commanded to loosen (SR_loosen=False), it can be commanded to tighten (SR_tighten=True)"
+59,60,SRL_lock,SRL_Locked,SRL_lock_SRL_Locked,"When steady rest is commanded to lock (SRL_lock=True), it results in the steady rest being locked (SRL_Locked=True)"
+61,62,SRL_unlock,SRL_Unlocked,SRL_unlock_SRL_Unlocked,"When steady rest is commanded to unlock (SRL_unlock=True), it results in the steady rest being unlocked (SRL_Unlocked=True)"
+66,68,Prog_LineNo,Prog_Name_LineNo,Prog_LineNo_Prog_Name_LineNo,The current line number (Prog_LineNo) is used to construct the joined identifier (Prog_Name_LineNo)
+67,65,Prog_Name,Prog_CycleTime,Prog_Name_Prog_CycleTime,The cycle time (Prog_CycleTime) is measured for the currently active program (Prog_Name)
+67,66,Prog_Name,Prog_LineNo,Prog_Name_Prog_LineNo,The active program (Prog_Name) determines which line numbers (Prog_LineNo) are available
+67,68,Prog_Name,Prog_Name_LineNo,Prog_Name_Prog_Name_LineNo,The active program name (Prog_Name) is used to construct the joined identifier (Prog_Name_LineNo)
+67,77,Prog_Name,T_A_701309,Prog_Name_T_A_701309,Certain programs trigger the tool change alarm (T_A_701309=True)
+68,56,Prog_Name_LineNo,SR_A_67040,Prog_Name_Line_No_to_SR_A_67040,"Prog_name HOME_CH1_SPF around line 127 wants to home moving steady rest, if already in home pos: notification"
+68,59,Prog_Name_LineNo,SRL_lock,Prog_Name_Line_No_to_SRL_lock,Certain program line numbers start tool loading / unloading
+68,61,Prog_Name_LineNo,SRL_unlock,Prog_Name_Line_No_to_SRL_unlock,Certain program line numbers start tool loading / unloading
+68,63,Prog_Name_LineNo,Prog_A_701330,Prog_Name_Prog_A_701330,Certain programs like HOME_CH1_SPF and specific lines may trigger the home position notification (Prog_A_701330)
+68,69,Prog_Name_LineNo,Spd_InnerCoolOn,Prog_Name_Line_No_to_Spd_InnerCool,Machining program controls cooling.
+68,70,Prog_Name_LineNo,Spd_OuterCoolOn,Prog_Name_Line_No_to_Spd_OuterCool,Machining program controls cooling.
+68,79,Prog_Name_LineNo,TL_lock,Prog_Name_Line_No_to_TL_lock,Certain program line numbers complete tool change operations
+68,81,Prog_Name_LineNo,TL_unlock,Prog_Name_Line_No_to_TL_unlock,Certain program line numbers trigger tool change operations
+68,82,Prog_Name_LineNo,CBC_close,Prog_Name_Line_No_to_CBC_close,Certain program line numbers command the cover to close (CBC_close=True)
+68,82,Prog_Name_LineNo,CBC_close,Prog_Name_LineNo_CBC_close,Certain program line numbers trigger cover closing
+68,85,Prog_Name_LineNo,CBC_open,Prog_Name_Line_No_to_CBC_open,Certain program line numbers command the cover to open (CBC_open=True)
+68,85,Prog_Name_LineNo,CBC_open,Prog_Name_LineNo_CBC_open,Certain program line numbers trigger cover opening
+68,86,Prog_Name_LineNo,WC_inPos,Prog_Name_Line_No_to_WC_inPos,Certain program line numbers check if workpiece carrier is in position (WC_inPos=True)
+68,89,Prog_Name_LineNo,WCL_toInitPos,Prog_Name_LineNo_WCL_toInitPos,Certain program line numbers trigger lock to move to initial position
+68,90,Prog_Name_LineNo,WCL_toWorkPos,Prog_Name_LineNo_WCL_toWorkPos,Certain program line numbers trigger lock to move to working position
+69,13,Spd_InnerCoolOn,LP_Pump_On,Spd_InnerCoolOn_LP_Pump_On,"When inner spindle coolant is on, pump needs to generate more pressure and is turned on."
+72,71,Spd_ActSpeed_C,Spd_ActPos_C,Spd_ActSpeed_C_Spd_ActPos_C,Speed of the spindle c-axis (Spd_ActSpeed_C) affects its position (Spd_ActPos_C) over time.
+74,73,Spd_ActSpeed_X,Spd_ActPos_X,Spd_ActSpeed_X_Spd_ActPos_X,Speed of the spindle x-axis (Spd_ActSpeed_X) affects its position (Spd_ActPos_X) over time.
+76,75,Spd_ActSpeed_Z,Spd_ActPos_Z,Spd_ActSpeed_Z_Spd_ActPos_Z,Speed of the spindle z-axis (Spd_ActSpeed_Z) affects its position over time (Spd_ActPos_Z).
+77,81,T_A_701309,TL_unlock,T_A_701309_TL_unlock,"When tool change alarm is active (T_A_701309=True), it triggers the tool revolver to unlock (TL_unlock=True)"
+78,79,T_ActToolIdent,TL_lock,T_ActToolIdent_TL_lock,"When a new tool is detected (T_ActToolIdent changes), the tool revolver is commanded to lock (TL_lock=True)"
+79,80,TL_lock,TL_Locked,TL_lock_TL_Locked,"When tool revolver is commanded to lock (TL_lock=True), it results in the revolver being locked (TL_Locked=True)"
+81,78,TL_unlock,T_ActToolIdent,TL_unlock_T_ActToolIdent,"When tool revolver is unlocked (TL_unlock=True), it allows for tool change, which updates the active tool identifier"
+81,79,TL_unlock,TL_lock,TL_unlock_TL_lock,"When tool revolver is commanded to unlock (TL_unlock=True), it prevents the lock command (TL_lock=False)"
+81,80,TL_unlock,TL_Locked,TL_unlock_TL_Locked,"When tool revolver is commanded to unlock (TL_unlock=True), it results in the revolver being unlocked (TL_Locked=False)"
+82,83,CBC_close,CBC_Closed,CBC_close_CBC_Closed,"When cover is commanded to close (CBC_close=True), it results in the cover being closed (CBC_Closed=True)"
+84,90,CBC_isOpen,WCL_toWorkPos,CBC_isOpen_WCL_toWorkPos,"When cover is open (CBC_isOpen=True), workpiece carrier lock can be moved into position"
+85,84,CBC_open,CBC_isOpen,CBC_open_CBC_isOpen,"When cover is commanded to open (CBC_open=True), it results in the cover being open (CBC_isOpen=True)"
+87,82,WCL_InitPos,CBC_close,WCL_InitPos_CBC_close,"When workpiece carrier lock is back in initial position (WCL_InitPos=True), the cover can be commanded to close (CBC_close=True)"
+89,87,WCL_toInitPos,WCL_InitPos,WCL_toInitPos_WCL_InitPos,"When lock is commanded to initial position (WCL_toInitPos=True), it moves to initial position (WCL_InitPos=True)"
+90,92,WCL_toWorkPos,WCL_WorkPos,WCL_toWorkPos_WCL_WorkPos,"When lock is commanded to working position (WCL_toWorkPos=True), it moves to working position (WCL_WorkPos=True)"
+91,89,WCL_Unlocked,WCL_toInitPos,WCL_Unlocked_WCL_toInitPos,"Only when unlocked (WCL_Unlocked=True), lock can be commanded to initial position (WCL_toInitPos=True)"
+92,88,WCL_WorkPos,WCL_Locked,WCL_WorkPos_WCL_Locked,"When lock is in working position (WCL_WorkPos=True), carrier can be locked (WCL_Locked=True)"

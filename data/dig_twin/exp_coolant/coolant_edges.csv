@@ -1,0 +1,11 @@
+source_id,target_id,source_label,target_label,edge_name,comment
+2,1,CLF_Filter_Ok,CLF_A_700307,CLF_Filter_Monitoring,When Filter_OK=False for at least 5 seconds -> Alarm 700307 is triggered
+4,3,F_Filter_Ok,F_A_700313,Fleece_Filter_Monitoring,When Fleece_Filter_Ok=False for at least 5 seconds --> Alarm 700313 is triggered
+7,5,HP_Pump_Ok,HP_A_700304,HP_Pump_Monitoring,When HP_Pump_Ok=False -> Alarm 700304 is triggered
+7,6,HP_Pump_Ok,HP_Pump_isOff,HP_Pump_not_ok_to_off,"When HP_Pump_Ok=False, then HP_Pump_isOff=True, i.e. the pump is turned off to prevent damage."
+9,8,LT_Level_Ok,LT_A_700317,LT_Level_Monitoring,When LT_Level_Ok=False -> Alarm 700317 is triggered
+9,10,LT_Level_Ok,LT_Pump_Ok,LT_Level_Pump_Ok,"When LT_Level_Ok=False -> LT_Pump_Ok=False, i.e. the pump is turned off to prevent overflow."
+12,11,LP_Pump_Ok,LP_A_700301,LP_Pump_Monitoring,When LP_Pump_Ok=False -> Alarm 700301 is triggered
+12,13,LP_Pump_Ok,LP_Pump_On,LP_Pump_On_Condition,"Only if LP_Pump_Ok=True, then LP_Pump_On can be True."
+13,6,LP_Pump_On,HP_Pump_isOff,LP_Pump_On_HP_Pump_Off,"When LP Pump is commanded to be on, then HP Pump is turned off."
+15,14,CLT_Level_lt_Min,CLT_A_700310,CLT_Level_Min_Monitoring,When Level_lt_Min=True -> Alarm 700310 is triggered

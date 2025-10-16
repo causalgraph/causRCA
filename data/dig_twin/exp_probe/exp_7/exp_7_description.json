@@ -1,0 +1,30 @@
+{
+  "exp_id": "exp_7",
+  "group": "probe",
+  "scenario": {
+    "init": "Measuring probe axis (MPA) is at working position (WP = true, m2WP = true, IP = false, m2IP = false)",
+    "action": "The control system commands a move to the initial position (m2IP = true -> m2WP = false)",
+    "expected_result": "WP switches to false as the MPA leaves the working position, and IP becomes true within a few seconds (MPA reaches and is recognized at initial position)",
+    "instead_failure": "WP remains true - no movement has occurred"
+  },
+  "manipulatedVars": [
+    "MPA_InitPos",
+    "MPA_WorkPos"
+  ],
+  "alarms": [
+    "MPA_A_701124"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_3",
+      "name": "MPA is stuck = does not move besides being commanded to.",
+      "comment": "MPA is stuck in working position / move to int  position command is not recognized.",
+      "variablesStates": {
+        "MPA_InitPos": false,
+        "MPA_toInitPos": true,
+        "MPA_toWorkPos": false,
+        "MPA_WorkPos": true
+      }
+    }
+  ]
+}

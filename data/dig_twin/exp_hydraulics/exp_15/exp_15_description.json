@@ -1,0 +1,38 @@
+{
+  "exp_id": "exp_15",
+  "group": "hydraulics",
+  "scenario": {
+    "init": "Machine is in normal operation; oil temperature is within the normal range (below 70\u00b0C), and hydraulic pressure is stable and above threshold.",
+    "expected_result": "Oil temperature and hydraulic pressure remain within normal operating limits throughout the process.",
+    "instead_failure": "A developing  cooling issues causes oil temperature to rise above 70\u00b0C, triggering a temperature warning. Hydraulic pressure then begins to drop, while the temperature continues to rise. In some runs, the pressure drops first; in others, the oil temperature exceeds the critical 80\u00b0C threshold first. Eventually, both conditions breach their respective limits, triggering fault alarms. The operator acknowledges the errors and terminates the experiment."
+  },
+  "manipulatedVars": [
+    "Hyd_Temp_lt_70",
+    "Hyd_Temp_lt_80",
+    "Hyd_Pressure"
+  ],
+  "alarms": [
+    "Hyd_A_700202",
+    "Hyd_A_700203",
+    "Hyd_A_700204"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_4",
+      "name": "Leakage in hydraulics system",
+      "comment": "Temperature rises and Leakage occurs.",
+      "variablesStates": {
+        "Hyd_Pressure": "< 6600"
+      }
+    },
+    {
+      "id": "diag_6",
+      "name": "Hydraulic oil cooler defective.",
+      "comment": "Temperature rises and Leakage occurs.",
+      "variablesStates": {
+        "Hyd_Temp_lt_70": true,
+        "Hyd_Temp_lt_80": true
+      }
+    }
+  ]
+}

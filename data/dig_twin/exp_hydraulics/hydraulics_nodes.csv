@@ -1,0 +1,18 @@
+id,path,label,type,io,datatype,examples,comment
+18,Hydraulics,Hyd_A_700202,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that pressure monitoring of hydraulics registered hydraulic pressure out of norm
+19,Hydraulics,Hyd_IsEnabled,Variable,output,bool,"True, False",True = indicates that hydraulics is enabled
+20,Hydraulics,Hyd_Pressure,Variable,input,int,"10274, 7381",hydraulic pressure analog ACTUAL value
+21,Hydraulics,Hyd_Valve_P_Up,Variable,output,bool,"True, False",True = accumulator charge valve commanded to open (until target pressure is reached again)
+22,Hydraulics/Hyd_Filter,Hyd_A_700207,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that hydraulic filter for returning oil is clogged
+23,Hydraulics/Hyd_Filter,Hyd_Filter_Ok,Variable,input,bool,"True, False",True = hydraulic filter is Ok
+24,Hydraulics/Hyd_Level,Hyd_A_700205,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",warning that hydraulic oil level is close to minimum
+25,Hydraulics/Hyd_Level,Hyd_A_700206,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that hydraulic oil level is below minimum
+26,Hydraulics/Hyd_Level,Hyd_Level_Ok,Variable,input,bool,"True, False",True = hydraulic level is Ok
+27,Hydraulics/Hyd_Pump,Hyd_A_700208,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that hydraulic pump motor protection switch triggered
+28,Hydraulics/Hyd_Pump,Hyd_Pump_isOff,Variable,input,bool,"True, False",True = hydraulic pump is off
+29,Hydraulics/Hyd_Pump,Hyd_Pump_Ok,Variable,input,bool,"True, False",True = motor of hydraulic pump is Ok
+30,Hydraulics/Hyd_Pump,Hyd_Pump_On,Variable,output,bool,"True, False",True = hydraulic pump is commanded to be on
+31,Hydraulics/Hyd_Temp,Hyd_A_700203,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",warning that temperature monitoring of hydraulics registers more than 70 degree C
+32,Hydraulics/Hyd_Temp,Hyd_A_700204,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that temperature monitoring of hydraulics registers more than 80 degree C
+33,Hydraulics/Hyd_Temp,Hyd_Temp_lt_70,Variable,input,bool,"True, False","True = temperature of hydraulic oil below 70 degree C, False = warning for temperature"
+34,Hydraulics/Hyd_Temp,Hyd_Temp_lt_80,Variable,input,bool,"True, False","True = temperature of hydraulic oil below 80 degree C, False = system stop"

@@ -1,0 +1,26 @@
+{
+  "exp_id": "exp_12",
+  "group": "hydraulics",
+  "scenario": {
+    "init": "Machine is in normal operation; oil level is within the normal range and stable.",
+    "expected_result": "Oil level remains constant within the specified limits, with no unexpected drop.",
+    "instead_failure": "Oil level falls continuously due to a leak, eventually dropping below the threshold and low\u2011level alarms are triggered."
+  },
+  "manipulatedVars": [
+    "Hyd_Level_Ok"
+  ],
+  "alarms": [
+    "Hyd_A_700205",
+    "Hyd_A_700206"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_4",
+      "name": "Leakage in hydraulics system",
+      "comment": "Leakage results in loss of oil and dropping level in oil reservoir",
+      "variablesStates": {
+        "Hyd_Level_Ok": false
+      }
+    }
+  ]
+}
