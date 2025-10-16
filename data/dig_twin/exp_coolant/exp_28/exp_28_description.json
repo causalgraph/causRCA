@@ -1,0 +1,31 @@
+{
+  "exp_id": "exp_28",
+  "group": "coolant",
+  "scenario": {
+    "init": "Machine is in normal operation; coolant is within spec and both Hydac and fleece filters are clean.",
+    "expected_result": "Coolant flows freely through both filters; pump maintains normal pressure and no alarms occur.",
+    "instead_failure": "Due to highly contaminated coolant, the Hydac filter clogs first and then the fleece filter blocks completely. Coolant circulation stops, causing the low\u2011pressure (ND) protection switch to trip and shut down the pump. Operator acknowledges the fault and terminates the experiment."
+  },
+  "manipulatedVars": [
+    "CLF_Filter_Ok",
+    "F_Filter_Ok",
+    "LP_Pump_Ok"
+  ],
+  "alarms": [
+    "CLF_A_700307",
+    "F_A_700313",
+    "LP_A_700301"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_10",
+      "name": "Highly Contaminated Coolant.",
+      "comment": "Highly contaminated coolant clogs filters, causing alarms and pump protection to trigger.",
+      "variablesStates": {
+        "CLF_Filter_Ok": false,
+        "F_Filter_Ok": false,
+        "LP_Pump_Ok": false
+      }
+    }
+  ]
+}

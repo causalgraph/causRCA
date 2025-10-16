@@ -1,0 +1,95 @@
+id,path,label,type,io,datatype,examples,comment
+1,Lathe/Coolant/Filter,CLF_A_700307,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that coolant filter is clogged
+2,Lathe/Coolant/Filter,CLF_Filter_Ok,Variable,input,bool,"True, False",True = coolant filter for fine particles is in Ok state
+3,Lathe/Coolant/Fleece,F_A_700313,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that fleece supply in coolant is empty and needs replacement
+4,Lathe/Coolant/Fleece,F_Filter_Ok,Variable,input,bool,"True, False",True = coolant fleece filter is Ok (not empty). False = Empty -> Fault
+5,Lathe/Coolant/HighPressurePump,HP_A_700304,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that coolant high pressure (HP) pump motor protection switch triggered
+6,Lathe/Coolant/HighPressurePump,HP_Pump_isOff,Variable,input,bool,"True, False",True = high pressure pump for coolant is turned off
+7,Lathe/Coolant/HighPressurePump,HP_Pump_Ok,Variable,input,bool,"True, False",True = high pressure pump for coolant is Ok
+8,Lathe/Coolant/LiftingTank,LT_A_700317,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm for overflow at lifting tank of coolant
+9,Lathe/Coolant/LiftingTank,LT_Level_Ok,Variable,input,bool,"True, False",True = lifting tank level supervision is ok -> No overlow. False = overlflow
+10,Lathe/Coolant/LiftingTank,LT_Pump_Ok,Variable,input,bool,"True, False",True = lifting tank pump supervision gives positive feedback
+11,Lathe/Coolant/LowPressurePump,LP_A_700301,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that coolant low pressure (LP) pump motor protection switch triggered
+12,Lathe/Coolant/LowPressurePump,LP_Pump_Ok,Variable,input,bool,"True, False",True = low pressure pump for coolant is Ok
+13,Lathe/Coolant/LowPressurePump,LP_Pump_On,Variable,output,bool,"True, False",True = low pressure pump for coolant  is commanded to be on
+14,Lathe/Coolant/Tank,CLT_A_700310,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that coolant tank fill level is below minimum
+15,Lathe/Coolant/Tank,CLT_Level_lt_Min,Variable,input,bool,"True, False",True = coolant level is below minimum -> Error
+16,Lathe/ExtractionUnit,ExU_isOff,Variable,input,bool,"False, True",True = extraction unit is off (measured)
+17,Lathe/ExtractionUnit,ExU_On,Variable,output,bool,"True, False",True = extraction unit is commanded to turn on
+18,Lathe/Hydraulics,Hyd_A_700202,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that pressure monitoring of hydraulics registered hydraulic pressure out of norm
+19,Lathe/Hydraulics,Hyd_IsEnabled,Variable,output,bool,"True, False",True = indicates that hydraulics is enabled
+20,Lathe/Hydraulics,Hyd_Pressure,Variable,input,int,"10274, 7381",hydraulic pressure analog ACTUAL value
+21,Lathe/Hydraulics,Hyd_Valve_P_Up,Variable,output,bool,"True, False",True = accumulator charge valve commanded to open (until target pressure is reached again)
+22,Lathe/Hydraulics/Hyd_Filter,Hyd_A_700207,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that hydraulic filter for returning oil is clogged
+23,Lathe/Hydraulics/Hyd_Filter,Hyd_Filter_Ok,Variable,input,bool,"True, False",True = hydraulic filter is Ok
+24,Lathe/Hydraulics/Hyd_Level,Hyd_A_700205,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",warning that hydraulic oil level is close to minimum
+25,Lathe/Hydraulics/Hyd_Level,Hyd_A_700206,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that hydraulic oil level is below minimum
+26,Lathe/Hydraulics/Hyd_Level,Hyd_Level_Ok,Variable,input,bool,"True, False",True = hydraulic level is Ok
+27,Lathe/Hydraulics/Hyd_Pump,Hyd_A_700208,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that hydraulic pump motor protection switch triggered
+28,Lathe/Hydraulics/Hyd_Pump,Hyd_Pump_isOff,Variable,input,bool,"True, False",True = hydraulic pump is off
+29,Lathe/Hydraulics/Hyd_Pump,Hyd_Pump_Ok,Variable,input,bool,"True, False",True = motor of hydraulic pump is Ok
+30,Lathe/Hydraulics/Hyd_Pump,Hyd_Pump_On,Variable,output,bool,"True, False",True = hydraulic pump is commanded to be on
+31,Lathe/Hydraulics/Hyd_Temp,Hyd_A_700203,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",warning that temperature monitoring of hydraulics registers more than 70 degree C
+32,Lathe/Hydraulics/Hyd_Temp,Hyd_A_700204,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that temperature monitoring of hydraulics registers more than 80 degree C
+33,Lathe/Hydraulics/Hyd_Temp,Hyd_Temp_lt_70,Variable,input,bool,"True, False","True = temperature of hydraulic oil below 70 degree C, False = warning for temperature"
+34,Lathe/Hydraulics/Hyd_Temp,Hyd_Temp_lt_80,Variable,input,bool,"True, False","True = temperature of hydraulic oil below 80 degree C, False = system stop"
+35,Lathe/Lubrication,Lubr_On,Variable,output,bool,"True, False",True = lubrication is commanded to be on
+36,Lathe/Lubrication,Lubr_P_Ok,Variable,input,bool,"True, False",True = pressure for central lubrication is sufficient; False = pressure needs to be built up
+37,Lathe/MeasuringProbe,MP_Inactive,Variable,output,bool,"False, True","True = measuring probe inactive, False=active and measuring"
+38,Lathe/MeasuringProbe/Axis,MPA_A_701124,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that for measuring probe did not reach end position in time
+39,Lathe/MeasuringProbe/Axis,MPA_A_701125,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that for measuring probe axis both endposition sensor inputs indicate true
+40,Lathe/MeasuringProbe/Axis,MPA_InitPos,Variable,input,bool,"True, False",True = axis that carries measuring probe is in initial position = hidden
+41,Lathe/MeasuringProbe/Axis,MPA_toInitPos,Variable,output,bool,"True, False",True = axis that carries measuring probe commanded to initial position (hidden)
+42,Lathe/MeasuringProbe/Axis,MPA_toWorkPos,Variable,output,bool,"True, False",True = axis that carries measuring probe commanded to working position to measure workpieces
+43,Lathe/MeasuringProbe/Axis,MPA_WorkPos,Variable,input,bool,"True, False","True = axis that carries measuring probe is in working pos, where it can measure workpieces"
+44,Lathe/MeasuringProbe/Cover,MPC_close,Variable,output,bool,"True, False",True = cover for measuring probe axis cover is commanded to be closed
+45,Lathe/MeasuringProbe/Cover,MPC_Closed,Variable,input,bool,"True, False",True = cover for measuring probe axis cover is closed
+46,Lathe/MeasuringProbe/Cover,MPC_isOpen,Variable,input,bool,"True, False",True = cover for measuring probe axis cover is open
+47,Lathe/MeasuringProbe/Cover,MPC_open,Variable,output,bool,"True, False",True = cover for measuring probe axis cover is commanded to be opened
+48,Lathe/Monitoring,M_ErrorActive,Variable,output,bool,"True, False",True = at least one error is active
+49,Lathe/Monitoring,M_Lifebit,Variable,output,bool,"True, False",heartbeat Bit that alternates between True and False to indicate that communication to upper systems is healthy
+50,Lathe/Monitoring,M_PowerOnDuration,Variable,output,int,"93, 94, 95",time in minutes since last normal power-up
+51,Lathe/Monitoring,M_WarnActive,Variable,output,bool,"True, False","True = at least one warning is active, that does not trigger the stacklight"
+52,Lathe/Monitoring,M_WarnWithStacklight,Variable,output,bool,"True, False",True = at least one warning is active that triggers the stacklight
+53,Lathe/Monitoring/Stacklight,SL_Green,Variable,output,bool,"True, False",True = stacklight indicates green (all good)
+54,Lathe/Monitoring/Stacklight,SL_Red,Variable,output,bool,"True, False",True = stacklight indicates red (fault / stop)
+55,Lathe/Monitoring/Stacklight,SL_Yellow,Variable,output,bool,"True, False",True = stacklight indicates yellow (notifications / warnings are present)
+56,Lathe/MovingSteadyRest,SR_A_67040,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",notification that moving steady rest is already in home position
+57,Lathe/MovingSteadyRest/Clamping,SR_loosen,Variable,output,bool,"True, False",True = steady rest commanded to loosen workpiece clamping
+58,Lathe/MovingSteadyRest/Clamping,SR_tighten,Variable,output,bool,"True, False",True = steady rest commanded to tighten workpiece clamping
+59,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,SRL_lock,Variable,output,bool,"True, False",True = steady rest is commanded to lock in position
+60,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,SRL_Locked,Variable,input,bool,"True, False",True = steady rest is Locked in position
+61,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,SRL_unlock,Variable,output,bool,"True, False",True = steady rest is commanded to unlock position
+62,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,SRL_Unlocked,Variable,input,bool,"True, False",True = steady rest is Unlocked and free to move position
+63,Lathe/Program,Prog_A_701330,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",notification that home position is reached - continue with NC start
+64,Lathe/Program,Prog_CuttingTime,Variable,output,float,"122155.05781798981, 122233.14181772165","Tool operating time (in seconds). The operating time of the path axes excluding active rapid traverse is measured in all NC programs between NC Start and Program End/NC Reset.
+                                                                The measurement is also interrupted during an active dwell time. The timer is automatically set to zero every time the control boots on default values."
+65,Lathe/Program,Prog_CycleTime,Variable,output,float,"7.208, 8.208, 0.094, 1.284",Runtime of the selected NC (sub-)program in seconds: The runtime between NC start and program end / NC reset is measured in the selected NC program. The timer is deleted when a new NC program is started.
+66,Lathe/Program,Prog_LineNo,Variable,output,int,"159, 173, 0, 125, 127","Line number of the current NC block (from1) in current sub-program.
+                                                        0: before program start -1: not available due to error -2: not available due to DISPLOF"
+67,Lathe/Program,Prog_Name,Variable,output,str,"MAIN_CH1_MPF, HOME_CH1_SPF, MEAS_SEMI_FINISH_PT_SPF",Program name of the currently active (sub-)program
+68,Lathe/Program,Prog_Name_LineNo,Variable,output,str,"MAIN_CH1_MPF|-2, HOME_CH1_SPF|10, MEAS_SEMI_FINISH_PT_SPF|159",Joined identifier of current active sub-program and line number within subprogram in pattern: <Prog_Name>|<LineNo>
+69,Lathe/Spindle,Spd_InnerCoolOn,Variable,output,bool,"True, False",True = inner cooling on spindle is commanded to turn on
+70,Lathe/Spindle,Spd_OuterCoolOn,Variable,output,bool,"True, False",True = outer cooling on spindle is commanded to turn on
+71,Lathe/Spindle/cAxis,Spd_ActPos_C,Variable,input,float,"4.142, 358.075",actual position of the spindles spinning c-axis in degrees
+72,Lathe/Spindle/cAxis,Spd_ActSpeed_C,Variable,input,float,"0.0, -30000.0, 16103.6",actual speed of the spindles spinning c-axis in degrees/second
+73,Lathe/Spindle/xAxis,Spd_ActPos_X,Variable,input,float,"382.977, 612.124, 60.23",actual position of the spindles x-axis in mm
+74,Lathe/Spindle/xAxis,Spd_ActSpeed_X,Variable,input,float,"0.0, 34320.0, -3480.0",actual speed of the spindles x-axis in mm/s
+75,Lathe/Spindle/zAxis,Spd_ActPos_Z,Variable,input,float,"250.325, 495.0",actual position of the spindles z-axis in mm
+76,Lathe/Spindle/zAxis,Spd_ActSpeed_Z,Variable,input,float,"0.0, 34320.0, -3480.0",actual speed of the spindles z-axis in mm/s
+77,Lathe/Tool,T_A_701309,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",warning that tool change is in progress
+78,Lathe/Tool,T_ActToolIdent,Variable,input,str,"3D_PROBE', '002398_A'",string identifier of currently clamped tool
+79,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,TL_lock,Variable,output,bool,"True, False",True = tool revolver is commanded to lock in position
+80,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,TL_Locked,Variable,input,bool,"True, False",True = tool revolver is Locked in position
+81,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,TL_unlock,Variable,output,bool,"True, False",True = tool revolver commanded to unlock position (required for tool change)
+82,Lathe/WorkpieceSupply/ConveyerBeltCover,CBC_close,Variable,output,bool,"True, False",True = cover protecting conveyer belt with workpiece carriers in workspace is commanded to be closed
+83,Lathe/WorkpieceSupply/ConveyerBeltCover,CBC_Closed,Variable,input,bool,"True, False",True = cover protecting conveyer belt with workpiece carriers in workspace is closed
+84,Lathe/WorkpieceSupply/ConveyerBeltCover,CBC_isOpen,Variable,input,bool,"True, False",True = cover protecting conveyer belt with workpiece carriers in workspace is open
+85,Lathe/WorkpieceSupply/ConveyerBeltCover,CBC_open,Variable,output,bool,"True, False",True = cover protecting conveyer belt with workpiece carriers in workspace to be opened
+86,Lathe/WorkpieceSupply/WorkpieceCarrier,WC_inPos,Variable,input,bool,"True, False",True = sensor indicates that workpiece carrier is in correct position
+87,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,WCL_InitPos,Variable,input,bool,"True, False",True = lock for securing workpiece carrier is in initial position = hidden
+88,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,WCL_Locked,Variable,output,bool,"True, False",True = workpiece carrier is locked
+89,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,WCL_toInitPos,Variable,output,bool,"True, False",True = lock for securing workpiece carrier commanded to initial position (hidden)
+90,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,WCL_toWorkPos,Variable,output,bool,"True, False","True = lock for securing workpiece carrier commanded to working position, where it can lock the workpiece carrier"
+91,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,WCL_Unlocked,Variable,output,bool,"True, False",True = workpiece carrier is unlocked
+92,Lathe/WorkpieceSupply/WorkpieceCarrier/Lock,WCL_WorkPos,Variable,input,bool,"True, False","True = lock for securing workpiece carrier is in working pos, where it can lock the workpiece carrier"

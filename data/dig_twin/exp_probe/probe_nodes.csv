@@ -1,0 +1,12 @@
+id,path,label,type,io,datatype,examples,comment
+37,MeasuringProbe,MP_Inactive,Variable,output,bool,"False, True","True = measuring probe inactive, False=active and measuring"
+38,MeasuringProbe/Axis,MPA_A_701124,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that for measuring probe did not reach end position in time
+39,MeasuringProbe/Axis,MPA_A_701125,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that for measuring probe axis both endposition sensor inputs indicate true
+40,MeasuringProbe/Axis,MPA_InitPos,Variable,input,bool,"True, False",True = axis that carries measuring probe is in initial position = hidden
+41,MeasuringProbe/Axis,MPA_toInitPos,Variable,output,bool,"True, False",True = axis that carries measuring probe commanded to initial position (hidden)
+42,MeasuringProbe/Axis,MPA_toWorkPos,Variable,output,bool,"True, False",True = axis that carries measuring probe commanded to working position to measure workpieces
+43,MeasuringProbe/Axis,MPA_WorkPos,Variable,input,bool,"True, False","True = axis that carries measuring probe is in working pos, where it can measure workpieces"
+44,MeasuringProbe/Cover,MPC_close,Variable,output,bool,"True, False",True = cover for measuring probe axis cover is commanded to be closed
+45,MeasuringProbe/Cover,MPC_Closed,Variable,input,bool,"True, False",True = cover for measuring probe axis cover is closed
+46,MeasuringProbe/Cover,MPC_isOpen,Variable,input,bool,"True, False",True = cover for measuring probe axis cover is open
+47,MeasuringProbe/Cover,MPC_open,Variable,output,bool,"True, False",True = cover for measuring probe axis cover is commanded to be opened

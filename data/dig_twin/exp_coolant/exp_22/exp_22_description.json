@@ -1,0 +1,28 @@
+{
+  "exp_id": "exp_22",
+  "group": "coolant",
+  "scenario": {
+    "init": "Machine is in normal operation; coolant flow is stable.",
+    "expected_result": "Coolant circulates properly through the system, keeping the machine at a stable temperature. Coolant level remains within normal operating range. No system faults occur.",
+    "instead_failure": "The high pressure pump fails and coolant level in tank drops below the minimum threshold."
+  },
+  "manipulatedVars": [
+    "HP_Pump_Ok",
+    "LT_Level_Ok"
+  ],
+  "alarms": [
+    "HP_A_700304",
+    "LT_A_700317"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_9",
+      "name": "Leakage in coolant system.",
+      "comment": "Leakage in coolant system causes minimum level warnings and finally pump protection to trigger",
+      "variablesStates": {
+        "HP_Pump_Ok": false,
+        "LT_Level_Ok": false
+      }
+    }
+  ]
+}

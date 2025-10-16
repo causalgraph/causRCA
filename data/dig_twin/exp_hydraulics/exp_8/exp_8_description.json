@@ -1,0 +1,24 @@
+{
+  "exp_id": "exp_8",
+  "group": "hydraulics",
+  "scenario": {
+    "init": "Machine is in normal operation and hydraulic pressure is ok.",
+    "instead_failure": "A leak causes hydraulic pressure to fall continuously; once pressure drops below the threshold (Hyd_Pressure < ca. 6600), the system detects a low\u2011pressure fault and raises an alarm."
+  },
+  "manipulatedVars": [
+    "Hyd_Pressure"
+  ],
+  "alarms": [
+    "Hyd_A_700202"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_4",
+      "name": "Leakage in hydraulics system",
+      "comment": "Leakage results in loss of pressure in the hydraulics system",
+      "variablesStates": {
+        "Hyd_Pressure": 6600
+      }
+    }
+  ]
+}

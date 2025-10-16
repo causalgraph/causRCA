@@ -1,0 +1,25 @@
+{
+  "exp_id": "exp_9",
+  "group": "hydraulics",
+  "scenario": {
+    "init": "Machine is in normal operation; hydraulic pressure level sensor is functioning normally and reporting a constant, stable pressure reading.",
+    "expected_result": "Pressure stays constant at its true value, with no unexpected fluctuations in the level sensor output.",
+    "instead_failure": "The defective pressure\u2011level sensor outputs random values outside the normal range\u2014spiking both above and below the true pressure\u2014until it falsely triggers a pressure fault alarm. Operator acknowledges the fault and terminates the experiment."
+  },
+  "manipulatedVars": [
+    "Hyd_Pressure"
+  ],
+  "alarms": [
+    "Hyd_A_700202"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_5",
+      "name": "Hyd_Pressure Sensor is defective.",
+      "comment": "Sensor readings jump randomly",
+      "variablesStates": {
+        "Hyd_Pressure": "!=10000"
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "exp_id": "exp_35",
+  "group": "coolant",
+  "scenario": {
+    "init": "Machine is in normal operation; Hydac primary filter is clean, high\u2011pressure pump is running normally.",
+    "expected_result": "Coolant flows freely through the Hydac filter; pump maintains stable pressure and flow; no alarms or trips occur.",
+    "instead_failure": "As debris accumulates, the Hydac filter becomes fully blocked, starving the pump inlet. The pump protection triggers, shutting off the pump."
+  },
+  "manipulatedVars": [
+    "CLF_Filter_Ok",
+    "LP_Pump_Ok"
+  ],
+  "alarms": [
+    "CLF_A_700307",
+    "LP_A_700301"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_10",
+      "name": "Highly Contaminated Coolant.",
+      "comment": "Highly contaminated coolant clogs filters, causing alarms and pump protection to trigger.",
+      "variablesStates": {
+        "CLF_Filter_Ok": false,
+        "LP_Pump_Ok": false
+      }
+    }
+  ]
+}

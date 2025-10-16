@@ -1,0 +1,16 @@
+id,path,label,type,io,datatype,examples,comment
+1,Coolant/Filter,CLF_A_700307,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that coolant filter is clogged
+2,Coolant/Filter,CLF_Filter_Ok,Variable,input,bool,"True, False",True = coolant filter for fine particles is in Ok state
+3,Coolant/Fleece,F_A_700313,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that fleece supply in coolant is empty and needs replacement
+4,Coolant/Fleece,F_Filter_Ok,Variable,input,bool,"True, False",True = coolant fleece filter is Ok (not empty). False = Empty -> Fault
+5,Coolant/HighPressurePump,HP_A_700304,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that coolant high pressure (HP) pump motor protection switch triggered
+6,Coolant/HighPressurePump,HP_Pump_isOff,Variable,input,bool,"True, False",True = high pressure pump for coolant is turned off
+7,Coolant/HighPressurePump,HP_Pump_Ok,Variable,input,bool,"True, False",True = high pressure pump for coolant is Ok
+8,Coolant/LiftingTank,LT_A_700317,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm for overflow at lifting tank of coolant
+9,Coolant/LiftingTank,LT_Level_Ok,Variable,input,bool,"True, False",True = lifting tank level supervision is ok -> No overlow. False = overlflow
+10,Coolant/LiftingTank,LT_Pump_Ok,Variable,input,bool,"True, False",True = lifting tank pump supervision gives positive feedback
+11,Coolant/LowPressurePump,LP_A_700301,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that coolant low pressure (LP) pump motor protection switch triggered
+12,Coolant/LowPressurePump,LP_Pump_Ok,Variable,input,bool,"True, False",True = low pressure pump for coolant is Ok
+13,Coolant/LowPressurePump,LP_Pump_On,Variable,output,bool,"True, False",True = low pressure pump for coolant  is commanded to be on
+14,Coolant/Tank,CLT_A_700310,Alarm,,bool,"True (=alarm active), False(=alarm inactive)",alarm that coolant tank fill level is below minimum
+15,Coolant/Tank,CLT_Level_lt_Min,Variable,input,bool,"True, False",True = coolant level is below minimum -> Error

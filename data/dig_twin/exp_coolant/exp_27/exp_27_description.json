@@ -1,0 +1,28 @@
+{
+  "exp_id": "exp_27",
+  "group": "coolant",
+  "scenario": {
+    "init": "Machine is in normal operation; coolant level is stable and above the minimum threshold; high\u2011pressure pump motor is running normally.",
+    "expected_result": "Coolant level remains above the minimum threshold and the pump motor continues operating without interruption.",
+    "instead_failure": "Defective or worn seals cause coolant to leak, so tank level falls below the minimum threshold and triggers a MIN\u2011level alarm. Continued low flow leads to pump cavitation/overload, causing the high\u2011pressure pump motor protection to trip and shut the motor off. Operator acknowledges the faults and terminates the experiment."
+  },
+  "manipulatedVars": [
+    "CLT_Level_lt_Min",
+    "HP_Pump_Ok"
+  ],
+  "alarms": [
+    "CLT_A_700310",
+    "HP_A_700304"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_9",
+      "name": "Leakage in coolant system.",
+      "comment": "Leakage in coolant system causes minimum level warnings and finally pump protection to trigger",
+      "variablesStates": {
+        "CLT_Level_lt_Min": true,
+        "HP_Pump_Ok": false
+      }
+    }
+  ]
+}

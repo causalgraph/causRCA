@@ -1,0 +1,28 @@
+{
+  "exp_id": "exp_10",
+  "group": "hydraulics",
+  "scenario": {
+    "init": "Machine is in normal operation; oil temperature is within the normal range and stable.",
+    "expected_result": "Oil temperature remains within the specified limits with no unexpected increase.",
+    "instead_failure": "Due to a defective cooler, oil temperature rises continuously at varying rates across runs until it exceeds the threshold; high\u2011temperature alarms are triggered."
+  },
+  "manipulatedVars": [
+    "Hyd_Temp_lt_70",
+    "Hyd_Temp_lt_80"
+  ],
+  "alarms": [
+    "Hyd_A_700203",
+    "Hyd_A_700204"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_6",
+      "name": "Hydraulic oil cooler defective.",
+      "comment": "Temperature in hydraulic oil rises above allowed operating range",
+      "variablesStates": {
+        "Hyd_Temp_lt_70": true,
+        "Hyd_Temp_lt_80": true
+      }
+    }
+  ]
+}

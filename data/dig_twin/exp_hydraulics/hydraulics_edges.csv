@@ -1,0 +1,19 @@
+source_id,target_id,source_label,target_label,edge_name,comment
+18,21,Hyd_A_700202,Hyd_Valve_P_Up,Hyd_A_700202_Disables_Hyd_Valve_P_Up,"When hydraulic pressure out of norm alarm 700202 is triggered (Hyd_A_700202=True), the pressure accumulation valve is closed in fear of leakage (Hyd_Valve_P_Up=False)."
+18,30,Hyd_A_700202,Hyd_Pump_On,Hyd_A_700202_Disables_Hyd_Pump_On,"When pressure out of norm alarm 700202 is triggered (Hyd_A_700202=True), the hydraulic pump is turned off (Hyd_Pump_On=False)."
+20,18,Hyd_Pressure,Hyd_A_700202,Hyd_Pressure_Monitoring,When hydraulic pressure is out of normal range for at least 5 seconds -> Alarm 700202 is triggered
+20,21,Hyd_Pressure,Hyd_Valve_P_Up,Hyd_Pressure_Control,"When hydraulic pressure falls below threshold, valve is commanded to open (Hyd_Valve_P_Up=True)"
+22,19,Hyd_A_700207,Hyd_IsEnabled,Hyd_A_700207_Disables_Hyd_IsEnabled,"When hydraulic filter is clogged alarm 700207 is triggered (Hyd_A_700207=True), hydraulics is disabled (Hyd_IsEnabled=False)."
+23,22,Hyd_Filter_Ok,Hyd_A_700207,Hyd_Filter_Monitoring,When Hyd_Filter_Ok=False for at least 5 seconds -> Alarm 700207 is triggered
+23,29,Hyd_Filter_Ok,Hyd_Pump_Ok,Hyd_Filter_Clogged_Pump_Failure,"When Hyd_Filter_Ok=False for some time, the probability of Hyd_Pump_OK=False rises (pump might fail)"
+25,30,Hyd_A_700206,Hyd_Pump_On,Hyd_A_700206_Disables_Hyd_Pump_On,"When hydraulic level is below minimum alarm 700206 is triggered (Hyd_A_700206=True), the hydraulic pump is turned off (Hyd_Pump_On=False)."
+26,24,Hyd_Level_Ok,Hyd_A_700205,Hyd_Level_Warning_Monitoring,When Hyd_Level_Ok=False -> Warning 700205 is immediately triggered
+26,25,Hyd_Level_Ok,Hyd_A_700206,Hyd_Level_Alarm_Monitoring,When Hyd_Level_Ok=False for at least 800ms  -> Alarm 700206 is triggered
+26,29,Hyd_Level_Ok,Hyd_Pump_Ok,Hyd_Level_Low_Pump_Failure,"When Hyd_Level_Ok=False for some time, the probability of Hyd_Pump_OK=False rises (pump might fail)"
+29,27,Hyd_Pump_Ok,Hyd_A_700208,Hyd_Pump_Monitoring,When Hyd_Pump_Ok=False -> Motor protection switch is triggered indicated by alarm 700208=True
+29,30,Hyd_Pump_Ok,Hyd_Pump_On,Hyd_Pump_Ok_Condition,"If Hyd_Pump_Ok=False, then Hyd_Pump_On is turned off (Hyd_Pump_On=False) to prevent damage."
+30,28,Hyd_Pump_On,Hyd_Pump_isOff,Hyd_Pump_On_Status,"When hydraulic pump is commanded to be on (Hyd_Pump_On=True), it results in the pump being on (Hyd_Pump_isOff=False)"
+32,19,Hyd_A_700204,Hyd_IsEnabled,Hyd_A_700204_Disables_Hyd_IsEnabled,"When hydraulic temperature is above 80 degree C alarm 700204 is triggered (Hyd_A_700204=True), hydraulics is disabled (Hyd_IsEnabled=False)."
+33,31,Hyd_Temp_lt_70,Hyd_A_700203,Hyd_Temp_Warning_Monitoring,When Hyd_Temp_lt_70=False (temp >= 70°C) -> Warning 700203 is triggered
+33,34,Hyd_Temp_lt_70,Hyd_Temp_lt_80,Hyd_Temp_70_to_80,Temperature above 70 degree is reached before 80 degree (common unobserved confounder)
+34,32,Hyd_Temp_lt_80,Hyd_A_700204,Hyd_Temp_Alarm_Monitoring,When Hyd_Temp_lt_80=False (temp >= 80°C) -> Alarm 700204 is triggered

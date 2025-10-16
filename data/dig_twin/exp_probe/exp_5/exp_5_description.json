@@ -1,0 +1,29 @@
+{
+  "exp_id": "exp_5",
+  "group": "probe",
+  "scenario": {
+    "init": "Measuring probe axis (MPA) is at initial position (IP = true, m2IP = true, WP = false, m2WP = false)",
+    "action": "The control system commands a move to the working position (m2WP = true -> m2IP = false)",
+    "expected_result": "IP switches to false as the MPA leaves the initial position, and WP becomes true within a few seconds (MPA reaches and is recognized at working position)",
+    "instead_failure": "IP incorrectly remains true even after movement - the system falsely believes the MPA is still at initial position, despite it having moved"
+  },
+  "manipulatedVars": [
+    "MPA_InitPos"
+  ],
+  "alarms": [
+    "MPA_A_701125"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_2",
+      "name": "MPA_InitPos Sensor is defective",
+      "comment": "Sensor is always true.",
+      "variablesStates": {
+        "MPA_InitPos": true,
+        "MPA_toInitPos": false,
+        "MPA_toWorkPos": true,
+        "MPA_WorkPos": true
+      }
+    }
+  ]
+}

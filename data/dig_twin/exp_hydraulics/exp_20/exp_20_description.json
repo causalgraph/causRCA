@@ -1,0 +1,28 @@
+{
+  "exp_id": "exp_20",
+  "group": "hydraulics",
+  "scenario": {
+    "init": "Machine is in normal operation; the return filter is clean, hydraulic flow is unobstructed, and the motor operates normally.",
+    "expected_result": "Hydraulic fluid flows freely through the return line; the return filter remains unblocked, and the motor continues to run without issue.",
+    "instead_failure": "Contamination in the system causes the return filter to become progressively blocked, increasing back pressure. Eventually, this results in hydraulic motor failure."
+  },
+  "manipulatedVars": [
+    "Hyd_Filter_Ok",
+    "Hyd_Pump_Ok"
+  ],
+  "alarms": [
+    "Hyd_A_700207",
+    "Hyd_A_700208"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_8",
+      "name": "Hydraulics flow obstructed by clogged filter.",
+      "comment": "Clogged filter obstructs flow, resulting in motor failure",
+      "variablesStates": {
+        "Hyd_Filter_Ok": false,
+        "Hyd_Pump_Ok": false
+      }
+    }
+  ]
+}

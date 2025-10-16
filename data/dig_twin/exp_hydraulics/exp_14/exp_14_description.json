@@ -1,0 +1,29 @@
+{
+  "exp_id": "exp_14",
+  "group": "hydraulics",
+  "scenario": {
+    "init": "Machine is in normal operation; both hydraulic pressure and oil level are within normal ranges and stable.",
+    "expected_result": "Hydraulic pressure and oil level remain stable and above their respective thresholds during operation.",
+    "instead_failure": "A hydraulic leak develops. First, a warning for low oil level is issued. Hydraulic pressure then continuously drops until its threshold is also breached.  Both values eventually fall below limits, triggering multiple fault alarms."
+  },
+  "manipulatedVars": [
+    "Hyd_Level_Ok",
+    "Hyd_Pressure"
+  ],
+  "alarms": [
+    "Hyd_A_700202",
+    "Hyd_A_700205",
+    "Hyd_A_700206"
+  ],
+  "diagnoses": [
+    {
+      "id": "diag_4",
+      "name": "Leakage in hydraulics system",
+      "comment": "Leakage causes oil levels and pressure to drop",
+      "variablesStates": {
+        "Hyd_Pressure": "!=10000",
+        "Hyd_Level_Ok": false
+      }
+    }
+  ]
+}
