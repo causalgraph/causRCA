@@ -1,6 +1,6 @@
 
 [![IWU][iwu-shield]](https://www.iwu.fraunhofer.de/)
-[![doi-paper-shield]](https://github.com/causalgraph/causRCA)
+[![doi-paper-shield]](https://doi.org/10.1016/j.procir.2025.09.010)
 [![License][apache2.0-licence]](https://opensource.org/license/apache-2-0)
 [![GitHub][github-shield]](https://github.com/causalgraph/causRCA)
 
@@ -120,7 +120,17 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 **CIRPe Paper:**
 ```bibtex
-tba. (after review and publication)
+@article{MEHLING2026114,
+    title = {Enabling Joint Benchmarking of Automated Root Cause Analysis and Causal Discovery in Manufacturing Using the causRCA Dataset},
+    journal = {Procedia CIRP},
+    volume = {139},
+    pages = {114-120},
+    year = {2026},
+    note = {13th CIRP Global Web Conference},
+    issn = {2212-8271},
+    doi = {https://doi.org/10.1016/j.procir.2025.09.010},
+    author = {Carl Willy Mehling and Sven Pieper and Tobias Lüke and Julius Döbelt and Steffen Ihlenfeldt}
+}
 ```
 
 **GitHub Repository:**
@@ -178,7 +188,10 @@ This work was developed within the research project **KausaLAssist**, funded by 
 
 ## Related Publications
 
-*Paper submission pending review - DOI will be added upon acceptance*
+Mehling, C. W., Pieper, S., Lüke, T., Döbelt, J., & Ihlenfeldt, S. (2026). Enabling joint benchmarking of automated root cause analysis and causal discovery in manufacturing using the causRCA dataset. *Procedia CIRP*, 139, 114–120. https://doi.org/10.1016/j.procir.2025.09.010
+
+For BibTeX citations, see the [Citation](#citation) section.
+
 
 ## Contributing
 
@@ -187,4 +200,4 @@ We welcome the use of the causRCA dataset for evaluating causal discovery and ro
 [iwu-shield]: https://img.shields.io/badge/Fraunhofer-IWU-179C7D?style=flat-square
 [github-shield]: https://img.shields.io/badge/github-%23121011.svg?style=flat-square&logo=github&logoColor=white
 [apache2.0-licence]: https://img.shields.io/badge/License-Apache2.0-yellow.svg?style=flat-square
-[doi-paper-shield]: https://img.shields.io/badge/DOI-tba.-blue.svg?style=flat-square
+[doi-paper-shield]: https://img.shields.io/badge/DOI-10.1016/j.procir.2025.09.010-blue.svg?style=flat-square

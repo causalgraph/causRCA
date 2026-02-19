@@ -25,6 +25,9 @@ PROBE_DS_PATH = Path(DIG_TWIN_DS_PATH, "exp_probe")
 COOLANT_DS_PATH = Path(DIG_TWIN_DS_PATH, "exp_coolant")
 HYDRAULICS_DS_PATH = Path(DIG_TWIN_DS_PATH, "exp_hydraulics")
 
+# Full expert graph path (used when evaluating in 'full' mode)
+FULL_EXPERT_GRAPH_PATH = Path(project_path, "data", "expert_graph")
+
 # Load Categorical Encoding Dictionary ones at startup
 CATEGORICAL_ENCODING_DICT = get_encoding_dict()
 
@@ -371,12 +374,19 @@ if __name__ == "__main__":
     for path in [PROBE_DS_PATH, COOLANT_DS_PATH, HYDRAULICS_DS_PATH]:
         # Load the graph, set name and init models with graph
         dataset_name = os.path.basename(path)
-        graph_in_path = find_and_load_gml_file(path)
-        supervised_models = [
-            BaselineSupervisedRCA(),
-            LogisticRegressionRCA(),
-            CausalPrioLogisticRegressionRCA(causal_graph=graph_in_path)]
         for mode in ['sub', 'full']:
+            if mode == 'full':
+                print("Loading full expert graph for 'full' mode evaluation.")
+                graph_in_path = find_and_load_gml_file(FULL_EXPERT_GRAPH_PATH)
+            else:
+                print("Loading dataset-specific graph for 'sub' mode evaluation.")
+                graph_in_path = find_and_load_gml_file(path)
+            # Init models with respective graph
+            supervised_models = [
+                BaselineSupervisedRCA(),
+                LogisticRegressionRCA(),
+                CausalPrioLogisticRegressionRCA(causal_graph=graph_in_path)]
+            # Evaluate each supervised model
             suffix = "-sub" if mode == 'sub' else ""
             for supervised_model in supervised_models:
                 model_name = supervised_model.__class__.__name__
@@ -422,15 +432,22 @@ if __name__ == "__main__":
     for path in [PROBE_DS_PATH, COOLANT_DS_PATH, HYDRAULICS_DS_PATH]:
         # Load the graph, set name and init models with graph
         dataset_name = os.path.basename(path)
-        graph_in_path = find_and_load_gml_file(path)
-        unsupervised_models = [
-            TimeRecency_BaselineUnsupervisedRCA(),
-            Baro(),
-            CausalPrioTimeRecencyRCA(causal_graph=graph_in_path),
-            RandomWalkRCA(causal_graph=graph_in_path),
-            PageRankRCA(causal_graph=graph_in_path)
-        ]
         for mode in ['sub', 'full']:
+            if mode == 'full':
+                print("Loading full expert graph for 'full' mode evaluation.")
+                graph_in_path = find_and_load_gml_file(FULL_EXPERT_GRAPH_PATH)
+            else:
+                print("Loading dataset-specific graph for 'sub' mode evaluation.")
+                graph_in_path = find_and_load_gml_file(path)
+            # Init models with respective graph
+            unsupervised_models = [
+                TimeRecency_BaselineUnsupervisedRCA(),
+                Baro(),
+                CausalPrioTimeRecencyRCA(causal_graph=graph_in_path),
+                RandomWalkRCA(causal_graph=graph_in_path),
+                PageRankRCA(causal_graph=graph_in_path)
+            ]
+            # Evaluate each unsupervised model
             suffix = "-sub" if mode == 'sub' else ""
             for unsupervised_model in unsupervised_models:
                 model_name = unsupervised_model.__class__.__name__
